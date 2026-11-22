@@ -71,7 +71,7 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':
 
 /* ---------- state ---------- */
 const DEF = {pres:'Donald Trump', vp:'JD Vance', speaker:'Mike Johnson', cj:'John Roberts',
-  sen:'Mark Warner, Tim Kaine', gov:'Abigail Spanberger', cap:'Richmond', rep:'',
+  sen:'Mark Warner, Tim Kaine', gov:'Abigail Spanberger', cap:'Richmond', rep:'', state:'VA', district:'', updated:'',
   name:'', addr:'', marital:'', kids:'', job:'', trips:'', taxes:''};
 let S = {prog:{}, groups:{}, me:Object.assign({}, DEF), arVoice:true};
 try { const r = localStorage.getItem('m4cit1'); if (r) { const o = JSON.parse(r); S = Object.assign(S, o); S.me = Object.assign({}, DEF, o.me || {}); } } catch(e) {}
@@ -180,13 +180,90 @@ R.home = () => {
   <button class="btn" onclick="startMock()">🎤 اختبار تجريبي مثل الضابط (20 سؤال)</button>
   <button class="btn" onclick="go('interview')">🧑‍💼 المقابلة كاملة (الأسئلة غير الـ civics)</button>
   <button class="btn" onclick="go('settings')">⚙️ إعداداتي (السيناتور، الحاكم، الرئيس…)</button>
+  <button class="btn" onclick="doUpdate('upd')">🔄 تحديث الأسماء تلقائياً (الرئيس، النائب، السيناتورات)</button><div class="card small" id="upd">${S.me.updated ? 'آخر تحديث: ' + esc(S.me.updated) : 'ما حدّثت لسا.'}</div>
   <div class="card small" id="aust">${AUREADY ? '🔊 الصوت الطبيعي جاهز' : '⏳ عم يتحمّل الصوت الطبيعي…'}</div><div class="card small">الأجوبة اللي بتتغيّر (الرئيس، نائبه، رئيس النواب، رئيس المحكمة، سيناتوراتك، حاكمك) لازم تتأكد منها قبل المقابلة من uscis.gov/citizenship/testupdates وتعدّلها بالإعدادات.</div>`, true);
 };
+
+/* ---------- auto update of officials ---------- */
+const CAPS = {AL:'Montgomery',AK:'Juneau',AZ:'Phoenix',AR:'Little Rock',CA:'Sacramento',CO:'Denver',CT:'Hartford',DE:'Dover',FL:'Tallahassee',GA:'Atlanta',HI:'Honolulu',ID:'Boise',IL:'Springfield',IN:'Indianapolis',IA:'Des Moines',KS:'Topeka',KY:'Frankfort',LA:'Baton Rouge',ME:'Augusta',MD:'Annapolis',MA:'Boston',MI:'Lansing',MN:'Saint Paul',MS:'Jackson',MO:'Jefferson City',MT:'Helena',NE:'Lincoln',NV:'Carson City',NH:'Concord',NJ:'Trenton',NM:'Santa Fe',NY:'Albany',NC:'Raleigh',ND:'Bismarck',OH:'Columbus',OK:'Oklahoma City',OR:'Salem',PA:'Harrisburg',RI:'Providence',SC:'Columbia',SD:'Pierre',TN:'Nashville',TX:'Austin',UT:'Salt Lake City',VT:'Montpelier',VA:'Richmond',WA:'Olympia',WV:'Charleston',WI:'Madison',WY:'Cheyenne'};
+const SRC = 'https://unitedstates.github.io/congress-legislators/';
+const fetchJ = u => fetch(u, {cache: 'no-cache'}).then(r => { if (!r.ok) throw new Error('http ' + r.status); return r.json(); });
+function censusLookup(addr) {
+  return new Promise((res, rej) => {
+    const cb = 'cb' + Date.now(), s = document.createElement('script');
+    const done = () => { clearTimeout(to); try { delete window[cb]; } catch(e) { window[cb] = undefined; } s.remove(); };
+    const to = setTimeout(() => { done(); rej(new Error('timeout')); }, 15000);
+    window[cb] = d => { done(); res(d); };
+    s.onerror = () => { done(); rej(new Error('net')); };
+    s.src = 'https://geocoding.geo.census.gov/geocoder/geographies/onelineaddress?address=' + encodeURIComponent(addr) + '&benchmark=Public_AR_Current&vintage=Current_Current&layers=all&format=jsonp&callback=' + cb;
+    document.head.appendChild(s);
+  });
+}
+async function lookupDistrict() {
+  const el = $('#s_lookup'), st = $('#lkst'), addr = el ? el.value.trim() : '';
+  if (!addr) { st.textContent = 'اكتب عنوانك الكامل أول (شارع، مدينة، ولاية).'; return; }
+  st.textContent = '⏳ عم أدوّر…';
+  try {
+    const d = await censusLookup(addr), m = d.result && d.result.addressMatches && d.result.addressMatches[0];
+    if (!m) { st.textContent = 'ما لقيت العنوان. جرّب بصيغة: 123 Main St, Winchester, VA 22601'; return; }
+    const g = m.geographies, key = Object.keys(g).find(k => /Congressional Districts/.test(k));
+    const stt = g['States'] && g['States'][0] && g['States'][0].STUSAB;
+    const dn = key ? parseInt(g[key][0].BASENAME, 10) : NaN;
+    if (stt) S.me.state = stt;
+    S.me.district = isNaN(dn) ? '0' : String(dn);
+    save(); $('#s_state').value = S.me.state; $('#s_district').value = S.me.district;
+    st.textContent = '✔ ولايتك ' + S.me.state + ' ومنطقتك رقم ' + S.me.district + ' (العنوان ما انحفظ).';
+  } catch(e) { st.textContent = 'ما قدرت أوصل لموقع الإحصاء (' + e.message + '). اكتب الولاية ورقم المنطقة بإيدك (من house.gov).'; }
+}
+async function updateOfficials() {
+  const out = {changed: [], notes: [], ok: false};
+  const st = (S.me.state || '').toUpperCase().trim();
+  if (!st) { out.notes.push('اكتب ولايتك أو عنوانك بالإعدادات أول.'); return out; }
+  let lg, ex;
+  try { [lg, ex] = await Promise.all([fetchJ(SRC + 'legislators-current.json'), fetchJ(SRC + 'executive.json')]); }
+  catch(e) { out.notes.push('ما قدرت أوصل للبيانات (' + e.message + '). تأكد من الإنترنت وجرّب بعدين.'); return out; }
+  const today = new Date().toISOString().slice(0, 10);
+  const nm = p => p.name.official_full || ((p.name.first || '') + ' ' + (p.name.last || '')).trim();
+  const last = p => p.terms[p.terms.length - 1];
+  const set = (k, v, label) => { if (v && S.me[k] !== v) { out.changed.push(label + ': ' + (S.me[k] || '—') + ' ← ' + v); S.me[k] = v; } };
+  const live = ex.filter(p => last(p).start <= today && today < last(p).end);
+  const pres = live.find(p => last(p).type === 'prez'), vp = live.find(p => last(p).type === 'viceprez');
+  if (pres) set('pres', nm(pres), 'الرئيس'); else out.notes.push('ما لقيت الرئيس بالبيانات، راجع uscis.gov/citizenship/testupdates');
+  if (vp) set('vp', nm(vp), 'نائب الرئيس'); else out.notes.push('ما لقيت نائب الرئيس بالبيانات.');
+  const sens = lg.filter(l => last(l).state === st && last(l).type === 'sen').map(nm);
+  if (sens.length) set('sen', sens.join(', '), 'السيناتورات');
+  else out.notes.push('ما لقيت سيناتورات للولاية ' + st + '. تأكد من رمز الولاية (حرفين).');
+  if (S.me.district !== '' && S.me.district !== undefined) {
+    const dn = parseInt(S.me.district, 10);
+    const reps = lg.filter(l => last(l).state === st && last(l).type === 'rep' && last(l).district === dn).map(nm);
+    if (reps.length) set('rep', reps[0], 'النائب عن منطقتك');
+    else out.notes.push('ما لقيت نائب للمنطقة ' + dn + ' بالولاية ' + st + '. افحص الرقم على house.gov.');
+  } else out.notes.push('ما بعرف منطقتك. اكتب عنوانك بالإعدادات (📍 اعرف منطقتي) لأحدّث النائب.');
+  if (CAPS[st]) set('cap', CAPS[st], 'عاصمة الولاية');
+  out.notes.push('الحاكم ورئيس مجلس النواب ورئيس المحكمة العليا ما بتتحدث لحالها: راجعها من uscis.gov/citizenship/testupdates.');
+  S.me.updated = today; save(); out.ok = true;
+  return out;
+}
+function showUpdate(out, id) {
+  const e = document.getElementById(id); if (!e) return;
+  e.innerHTML = (out.ok ? `<b>✔ تم التحديث (${esc(S.me.updated)})</b>` : '<b>⚠ ما تمّ التحديث</b>') +
+    (out.changed.length ? '<ul class="en">' + out.changed.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul>' : (out.ok ? '<div class="small">كل الأسماء محدّثة، ما تغيّر شي.</div>' : '')) +
+    '<div class="small">' + out.notes.map(esc).join('<br>') + '</div>';
+}
+async function doUpdate(id) {
+  const e = document.getElementById(id); if (e) e.innerHTML = '⏳ عم أحدّث…';
+  showUpdate(await updateOfficials(), id);
+}
 
 /* ---------- settings ---------- */
 R.settings = () => {
   const f = (k, l, ph) => `<label>${l}</label><input type="text" id="s_${k}" value="${esc(S.me[k] || '')}" placeholder="${ph || ''}">`;
   shell('إعداداتي', 'أجوبة بتتغيّر + معلوماتك الشخصية', `
+  <div class="card"><b>📍 منطقتي</b><div class="small">اكتب عنوانك وبعرف ولايتك ومنطقتك تلقائياً من موقع الإحصاء الأمريكي الرسمي (العنوان بيروح للاستعلام بس وما بنحفظه).</div>
+  <label>عنوانك الكامل</label><input type="text" id="s_lookup" placeholder="123 Main St, Winchester, VA 22601">
+  <button class="btn" onclick="lookupDistrict()">📍 اعرف منطقتي</button><div class="small" id="lkst"></div>
+  ${f('state', 'الولاية (حرفين مثل VA)')}${f('district', 'رقم منطقتك بمجلس النواب')}
+  <button class="btn pri" onclick="saveAndUpdate()">🔄 احفظ وحدّث الأسماء</button><div class="small" id="upd2"></div></div>
   <div class="card"><b>أجوبة الـ civics المتغيّرة</b><div class="small">تأكد منها من uscis.gov/citizenship/testupdates وhouse.gov</div>
   ${f('pres', 'الرئيس (سؤال 38)')}${f('vp', 'نائب الرئيس (سؤال 39)')}${f('speaker', 'رئيس مجلس النواب (سؤال 30)')}${f('cj', 'رئيس المحكمة العليا (سؤال 57)')}
   ${f('sen', 'سيناتورات ولايتك (سؤال 23) — اكتب الاثنين')}${f('rep', 'النائب عن منطقتك (سؤال 29) — افحص house.gov', 'اكتب اسمه')}${f('gov', 'حاكم الولاية (سؤال 61)')}${f('cap', 'عاصمة الولاية (سؤال 62)')}</div>
@@ -195,9 +272,16 @@ R.settings = () => {
   <div class="card"><label><input type="checkbox" id="s_ar" ${S.arVoice ? 'checked' : ''}> المعلّم يقرأ الترجمة العربية بعد الإنجليزي</label></div>
   <button class="btn pri" onclick="saveSettings()">حفظ</button>`);
 };
-function saveSettings() {
+function collectSettings() {
   Object.keys(DEF).forEach(k => { const e = $('#s_' + k); if (e) S.me[k] = e.value.trim(); });
-  S.arVoice = $('#s_ar').checked; save(); back();
+  S.arVoice = $('#s_ar').checked; save();
+}
+function saveSettings() { collectSettings(); back(); }
+async function saveAndUpdate() {
+  collectSettings();
+  const e = $('#upd2'); e.textContent = '⏳ عم أحدّث…';
+  const out = await updateOfficials(); showUpdate(out, 'upd2');
+  ['pres', 'vp', 'sen', 'rep', 'cap'].forEach(k => { const el = $('#s_' + k); if (el) el.value = S.me[k] || ''; });
 }
 
 /* ---------- groups ---------- */
