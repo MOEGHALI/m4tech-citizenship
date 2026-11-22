@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>M4TECH Citizenship Coach — معلّم الجنسية</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#0e1a2b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="M4TECH Citizen">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+:root{--bg:#0e1a2b;--card:#16283f;--card2:#1d3452;--tx:#eef3fa;--mut:#9fb2c8;--acc:#f5b942;--ok:#3ecf8e;--bad:#ff6b6b;--line:#2a4468}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--tx);font-family:-apple-system,system-ui,"Segoe UI",Tahoma,Arial,sans-serif;font-size:17px;line-height:1.55}
+#app{max-width:680px;margin:0 auto;padding:calc(12px + env(safe-area-inset-top)) 14px calc(40px + env(safe-area-inset-bottom))}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.logo{width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,#f5b942,#e0902a);color:#0e1a2b;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;line-height:1;direction:ltr;flex:none}
+.logo b{font-size:17px}.logo i{font-size:8px;font-style:normal;letter-spacing:.5px}
+.top h1{font-size:17px;margin:0;flex:1}
+.top h1 small{display:block;color:var(--mut);font-weight:400;font-size:12px}
+.back{background:var(--card);border:1px solid var(--line);color:var(--tx);border-radius:10px;padding:8px 12px;font-size:15px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin:10px 0}
+.card.hl{border-color:var(--acc)}
+.btn{display:block;width:100%;text-align:center;border:0;border-radius:14px;padding:14px 12px;font-size:17px;font-weight:700;margin:8px 0;background:var(--card2);color:var(--tx);border:1px solid var(--line)}
+.btn.pri{background:var(--acc);color:#0e1a2b;border:0}
+.btn.ok{background:var(--ok);color:#06251a;border:0}
+.btn.bad{background:var(--bad);color:#2a0606;border:0}
+.btn.sm{display:inline-block;width:auto;padding:9px 14px;font-size:15px;margin:4px 4px 4px 0}
+.row{display:flex;gap:8px}.row>*{flex:1}
+.en{direction:ltr;text-align:left;unicode-bidi:isolate}
+.q{font-size:22px;font-weight:700;direction:ltr;text-align:left}
+.ar{color:var(--mut)}
+.tag{display:inline-block;background:var(--card2);border-radius:999px;padding:2px 10px;font-size:12px;color:var(--mut);margin-left:6px}
+.ans{background:#0b2a20;border:1px solid #1d6b4c;border-radius:12px;padding:12px;margin:10px 0}
+.ans .en{font-size:20px;font-weight:700;color:#bff5dc}
+.tip{background:#2b2410;border:1px dashed var(--acc);border-radius:12px;padding:10px 12px;margin:10px 0;color:#ffe3a6}
+textarea,input[type=text]{width:100%;background:#0b1626;color:var(--tx);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:18px;font-family:inherit;direction:ltr;text-align:left}
+textarea{min-height:76px;resize:vertical}
+label{display:block;color:var(--mut);font-size:14px;margin:10px 0 4px}
+.bar{height:8px;background:#0b1626;border-radius:99px;overflow:hidden;margin:8px 0}
+.bar>div{height:100%;background:linear-gradient(90deg,var(--acc),var(--ok))}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:right;color:var(--tx);font-size:15px}
+.g b{display:block;font-size:16px}
+.g.m{border-color:var(--ok)}.g.l{border-color:var(--acc)}
+.verdict{border-radius:12px;padding:12px;font-weight:800;font-size:19px;margin:8px 0}
+.verdict.ok{background:#0b2a20;color:var(--ok)}.verdict.no{background:#2e1212;color:var(--bad)}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px}
+.tabs button{flex:none;background:var(--card);border:1px solid var(--line);color:var(--tx);border-radius:999px;padding:8px 14px;font-size:15px}
+.tabs button.on{background:var(--acc);color:#0e1a2b;border:0;font-weight:700}
+details{background:var(--card2);border-radius:10px;padding:8px 12px;margin:8px 0}
+summary{cursor:pointer;color:var(--mut)}
+ul{padding-inline-start:20px;margin:6px 0}
+.small{font-size:13px;color:var(--mut)}
+.pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:700}
+.pill.ok{background:#0b2a20;color:var(--ok)}.pill.no{background:#2e1212;color:var(--bad)}
+.big{font-size:44px;text-align:center}
+hr{border:0;border-top:1px solid var(--line);margin:12px 0}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const DATA = {"q": [{"n": 1, "g": 0, "en": "What is the form of government of the United States?", "ar": "ما هو شكل الحكومة في أمريكا؟", "say": "Republic", "arA": "جمهورية (ديمقراطية تمثيلية)", "tip": "الشعب بينتخب ناس يمثّلوه = Republic. الـ R مثل Representatives", "need": 1, "keys": "republic|representative democracy|federal republic", "all": ["Republic", "Constitution-based federal republic", "Representative democracy"], "dyn": false, "senior": false}, {"n": 2, "g": 0, "en": "What is the supreme law of the land?", "ar": "ما هو القانون الأعلى في البلاد؟", "say": "The Constitution", "arA": "الدستور", "tip": "الدستور فوق الكل، حتى فوق الرئيس", "need": 1, "keys": "constitution", "all": ["(U.S.) Constitution"], "dyn": false, "senior": true}, {"n": 3, "g": 0, "en": "Name one thing the U.S. Constitution does.", "ar": "اذكر شي واحد بيعمله الدستور", "say": "Defines the powers of government", "arA": "بيحدد صلاحيات الحكومة (أو بيحمي حقوق الناس)", "tip": "الدستور = قواعد اللعبة للحكومة وحماية للناس", "need": 1, "keys": "form|define|power|part|protect|right", "all": ["Forms the government", "Defines powers of government", "Defines the parts of government", "Protects the rights of the people"], "dyn": false, "senior": false}, {"n": 4, "g": 0, "en": "The U.S. Constitution starts with the words “We the People.” What does “We the People” mean?", "ar": "عبارة «نحن الشعب» شو معناها؟", "say": "Self-government", "arA": "الشعب بيحكم حاله", "tip": "We the People = نحن الشعب بنحكم حالنا = Self-government", "need": 1, "keys": "self|sovereign|consent|govern|social contract", "all": ["Self-government", "Popular sovereignty", "Consent of the governed", "People should govern themselves", "(Example of) social contract"], "dyn": false, "senior": false}, {"n": 5, "g": 0, "en": "How are changes made to the U.S. Constitution?", "ar": "كيف بتصير تغييرات على الدستور؟", "say": "Amendments", "arA": "تعديلات", "tip": "Amend = عدّل. وبنقول Amendments", "need": 1, "keys": "amend", "all": ["Amendments", "The amendment process"], "dyn": false, "senior": false}, {"n": 6, "g": 0, "en": "What does the Bill of Rights protect?", "ar": "شو بيحمي Bill of Rights؟", "say": "The basic rights of Americans", "arA": "الحقوق الأساسية للأمريكيين", "tip": "Bill of Rights = ورقة الحقوق = أول 10 تعديلات", "need": 1, "keys": "right", "all": ["(The basic) rights of Americans", "(The basic) rights of people living in the United States"], "dyn": false, "senior": false}, {"n": 7, "g": 0, "en": "How many amendments does the U.S. Constitution have?", "ar": "كم تعديل في الدستور؟", "say": "Twenty-seven (27)", "arA": "سبعة وعشرين", "tip": "27: أول 10 هم Bill of Rights ومعهم 17", "need": 1, "keys": "27|twenty-seven|twenty seven", "all": ["Twenty-seven (27)"], "dyn": false, "senior": true}, {"n": 8, "g": 0, "en": "Why is the Declaration of Independence important?", "ar": "ليش إعلان الاستقلال مهم؟", "say": "It says America is free from British control", "arA": "بيقول إن أمريكا حرة من سيطرة بريطانيا", "tip": "الإعلان = إعلان الطلاق من بريطانيا", "need": 1, "keys": "free|british|britain|equal|rights|freedom", "all": ["It says America is free from British control.", "It says all people are created equal.", "It identifies inherent rights.", "It identifies individual freedoms."], "dyn": false, "senior": false}, {"n": 9, "g": 1, "en": "What founding document said the American colonies were free from Britain?", "ar": "أي وثيقة قالت إن المستعمرات حرة من بريطانيا؟", "say": "Declaration of Independence", "arA": "إعلان الاستقلال", "tip": "Independence = استقلال", "need": 1, "keys": "declaration", "all": ["Declaration of Independence"], "dyn": false, "senior": false}, {"n": 10, "g": 1, "en": "Name two important ideas from the Declaration of Independence and the U.S. Constitution.", "ar": "اذكر فكرتين مهمتين من إعلان الاستقلال والدستور", "say": "Liberty and equality", "arA": "الحرية والمساواة", "tip": "اثنين بس: Liberty + Equality", "need": 2, "keys": "equality|equal;liberty|freedom;social contract;natural right;limited government;self-government|self government", "all": ["Equality", "Liberty", "Social contract", "Natural rights", "Limited government", "Self-government"], "dyn": false, "senior": false}, {"n": 11, "g": 1, "en": "The words “Life, Liberty, and the pursuit of Happiness” are in what founding document?", "ar": "«الحياة والحرية والسعي للسعادة» بأي وثيقة؟", "say": "Declaration of Independence", "arA": "إعلان الاستقلال", "tip": "Life, Liberty, Happiness = جملة الاستقلال المشهورة", "need": 1, "keys": "declaration", "all": ["Declaration of Independence"], "dyn": false, "senior": false}, {"n": 12, "g": 1, "en": "What is the economic system of the United States?", "ar": "شو النظام الاقتصادي في أمريكا؟", "say": "Capitalism", "arA": "الرأسمالية (اقتصاد السوق الحر)", "tip": "Capitalism = رأسمالية. أو Free market economy", "need": 1, "keys": "capitalis|free market", "all": ["Capitalism", "Free market economy"], "dyn": false, "senior": true}, {"n": 13, "g": 1, "en": "What is the rule of law?", "ar": "شو يعني سيادة القانون (Rule of law)؟", "say": "No one is above the law", "arA": "ما حدا فوق القانون", "tip": "الكل لازم يلتزم بالقانون، حتى الرئيس", "need": 1, "keys": "above the law|everyone must follow|obey the law|must follow", "all": ["Everyone must follow the law.", "Leaders must obey the law.", "Government must obey the law.", "No one is above the law."], "dyn": false, "senior": false}, {"n": 14, "g": 1, "en": "Many documents influenced the U.S. Constitution. Name one.", "ar": "وثائق كتيرة أثّرت على الدستور. اذكر واحدة", "say": "Declaration of Independence", "arA": "إعلان الاستقلال (أو Federalist Papers / Articles of Confederation)", "tip": "أسهلهم: Declaration of Independence", "need": 1, "keys": "declaration|articles|federalist|anti-federalist|virginia|fundamental orders|mayflower|iroquois", "all": ["Declaration of Independence", "Articles of Confederation", "Federalist Papers", "Anti-Federalist Papers", "Virginia Declaration of Rights", "Fundamental Orders of Connecticut", "Mayflower Compact", "Iroquois Great Law of Peace"], "dyn": false, "senior": false}, {"n": 15, "g": 1, "en": "There are three branches of government. Why?", "ar": "في 3 فروع للحكومة. ليش؟", "say": "So one part does not become too powerful", "arA": "حتى ما يصير جزء واحد قوي زيادة (توازن ورقابة)", "tip": "Checks and balances = توازن ورقابة", "need": 1, "keys": "powerful|checks|balance|separation", "all": ["So one part does not become too powerful", "Checks and balances", "Separation of powers"], "dyn": false, "senior": false}, {"n": 16, "g": 1, "en": "Name the three branches of government.", "ar": "اذكر فروع الحكومة الثلاثة", "say": "Legislative, executive, and judicial", "arA": "التشريعية، التنفيذية، القضائية", "tip": "Congress يكتب، President ينفّذ، Courts يحكموا (L-E-J)", "need": 3, "keys": "legislative|congress;executive|president;judicial|courts", "all": ["Legislative, executive, and judicial", "Congress, president, and the courts"], "dyn": false, "senior": false}, {"n": 17, "g": 2, "en": "The President of the United States is in charge of which branch of government?", "ar": "الرئيس مسؤول عن أي فرع؟", "say": "Executive branch", "arA": "الفرع التنفيذي", "tip": "Executive = ينفّذ. الرئيس بينفّذ القوانين", "need": 1, "keys": "executive", "all": ["Executive branch"], "dyn": false, "senior": false}, {"n": 18, "g": 2, "en": "What part of the federal government writes laws?", "ar": "أي جزء بالحكومة بيكتب القوانين؟", "say": "Congress", "arA": "الكونغرس (السلطة التشريعية)", "tip": "Congress = كتّاب القوانين", "need": 1, "keys": "congress|legislat", "all": ["(U.S.) Congress", "(U.S. or national) legislature", "Legislative branch"], "dyn": false, "senior": false}, {"n": 19, "g": 2, "en": "What are the two parts of the U.S. Congress?", "ar": "شو جزئين الكونغرس؟", "say": "Senate and House of Representatives", "arA": "مجلس الشيوخ ومجلس النواب", "tip": "Senate + House", "need": 2, "keys": "senate;house", "all": ["Senate and House (of Representatives)"], "dyn": false, "senior": false}, {"n": 20, "g": 2, "en": "Name one power of the U.S. Congress.", "ar": "اذكر صلاحية للكونغرس", "say": "Writes laws", "arA": "بيكتب القوانين (أو بيعلن الحرب، بيحط ميزانية الدولة)", "tip": "أسهلها: Writes laws", "need": 1, "keys": "law|war|budget", "all": ["Writes laws", "Declares war", "Makes the federal budget"], "dyn": false, "senior": true}, {"n": 21, "g": 2, "en": "How many U.S. senators are there?", "ar": "كم سيناتور في أمريكا؟", "say": "One hundred (100)", "arA": "مية", "tip": "2 لكل ولاية × 50 ولاية = 100", "need": 1, "keys": "100|hundred", "all": ["One hundred (100)"], "dyn": false, "senior": false}, {"n": 22, "g": 2, "en": "How long is a term for a U.S. senator?", "ar": "كم مدة السيناتور؟", "say": "Six (6) years", "arA": "ست سنين", "tip": "Senator = Six. (S و S)", "need": 1, "keys": "6|six", "all": ["Six (6) years"], "dyn": false, "senior": false}, {"n": 23, "g": 2, "en": "Who is one of your state’s U.S. senators now?", "ar": "مين واحد من سيناتورات ولايتك هلق؟", "say": "{sen}", "arA": "اسم أحد سيناتورات ولايتك (عبّيهم بالإعدادات)", "tip": "أحفظ اسمين: مرتين بالأسبوع راجعهم", "need": 1, "keys": "@sen", "all": [], "dyn": true, "senior": false}, {"n": 24, "g": 2, "en": "How many voting members are in the House of Representatives?", "ar": "كم عضو بيصوّت بمجلس النواب؟", "say": "Four hundred thirty-five (435)", "arA": "435", "tip": "435 = أربعمية وخمسة وثلاثين", "need": 1, "keys": "435|four hundred", "all": ["Four hundred thirty-five (435)"], "dyn": false, "senior": false}, {"n": 25, "g": 3, "en": "How long is a term for a member of the House of Representatives?", "ar": "كم مدة عضو مجلس النواب؟", "say": "Two (2) years", "arA": "سنتين", "tip": "House = Two. (House قصير، Senate طويل)", "need": 1, "keys": "2|two", "all": ["Two (2) years"], "dyn": false, "senior": false}, {"n": 26, "g": 3, "en": "Why do U.S. representatives serve shorter terms than U.S. senators?", "ar": "ليش النواب مدتهم أقصر من الشيوخ؟", "say": "To more closely follow public opinion", "arA": "حتى يضلوا قريبين من رأي الناس", "tip": "كل سنتين انتخابات فبيسمعوا للناس", "need": 1, "keys": "public opinion|opinion|follow", "all": ["To more closely follow public opinion"], "dyn": false, "senior": false}, {"n": 27, "g": 3, "en": "How many senators does each state have?", "ar": "كم سيناتور لكل ولاية؟", "say": "Two (2)", "arA": "اثنين", "tip": "لكل ولاية اثنين، كبيرة أو صغيرة", "need": 1, "keys": "2|two", "all": ["Two (2)"], "dyn": false, "senior": false}, {"n": 28, "g": 3, "en": "Why does each state have two senators?", "ar": "ليش لكل ولاية سيناتورين؟", "say": "Equal representation", "arA": "تمثيل متساوي للولايات الصغيرة (التسوية الكبرى)", "tip": "Great Compromise = الصغيرة والكبيرة بالشيوخ متساويين", "need": 1, "keys": "equal|compromise", "all": ["Equal representation (for small states)", "The Great Compromise (Connecticut Compromise)"], "dyn": false, "senior": false}, {"n": 29, "g": 3, "en": "Name your U.S. representative.", "ar": "اسم عضو مجلس النواب عن منطقتك؟", "say": "{rep}", "arA": "اسم النائب عن منطقتك (عبّيه بالإعدادات)", "tip": "افحص house.gov قبل المقابلة", "need": 1, "keys": "@rep", "all": [], "dyn": true, "senior": false}, {"n": 30, "g": 3, "en": "What is the name of the Speaker of the House of Representatives now?", "ar": "مين رئيس مجلس النواب (Speaker) هلق؟", "say": "{speaker}", "arA": "رئيس مجلس النواب الحالي", "tip": "Speaker = رئيس المجلس. راجع uscis.gov/citizenship/testupdates", "need": 1, "keys": "@speaker", "all": [], "dyn": true, "senior": true}, {"n": 31, "g": 3, "en": "Who does a U.S. senator represent?", "ar": "مين بيمثّل السيناتور؟", "say": "Citizens of their state", "arA": "مواطني ولايته", "tip": "السيناتور = الولاية كلها", "need": 1, "keys": "state", "all": ["Citizens of their state", "People of their state"], "dyn": false, "senior": false}, {"n": 32, "g": 3, "en": "Who elects U.S. senators?", "ar": "مين بينتخب السيناتورات؟", "say": "Citizens from their state", "arA": "مواطنو ولايته", "tip": "الولاية كلها بتنتخبهم", "need": 1, "keys": "citizens|people|state", "all": ["Citizens from their state"], "dyn": false, "senior": false}, {"n": 33, "g": 4, "en": "Who does a member of the House of Representatives represent?", "ar": "مين بيمثّل عضو مجلس النواب؟", "say": "Citizens in their district", "arA": "مواطني دائرته (منطقته)", "tip": "النائب = District (منطقة)", "need": 1, "keys": "district", "all": ["Citizens in their (congressional) district", "Citizens in their district", "People from their (congressional) district", "People in their district"], "dyn": false, "senior": false}, {"n": 34, "g": 4, "en": "Who elects members of the House of Representatives?", "ar": "مين بينتخب أعضاء مجلس النواب؟", "say": "Citizens from their district", "arA": "مواطنو دائرته", "tip": "District = منطقة صغيرة", "need": 1, "keys": "district|citizens|people", "all": ["Citizens from their (congressional) district"], "dyn": false, "senior": false}, {"n": 35, "g": 4, "en": "Some states have more representatives than other states. Why?", "ar": "ليش بعض الولايات إلها نواب أكتر؟", "say": "Because of the state's population", "arA": "بسبب عدد سكان الولاية", "tip": "أكتر ناس = أكتر نواب", "need": 1, "keys": "population|more people", "all": ["(Because of) the state’s population", "(Because) they have more people", "(Because) some states have more people"], "dyn": false, "senior": false}, {"n": 36, "g": 4, "en": "The President of the United States is elected for how many years?", "ar": "الرئيس بينتخب لكم سنة؟", "say": "Four (4) years", "arA": "أربع سنين", "tip": "4 سنين، مرتين بالكتير", "need": 1, "keys": "4|four", "all": ["Four (4) years"], "dyn": false, "senior": true}, {"n": 37, "g": 4, "en": "The President of the United States can serve only two terms. Why?", "ar": "ليش الرئيس بيخدم ولايتين بس؟", "say": "Because of the 22nd Amendment", "arA": "بسبب التعديل 22 (حتى ما يصير قوي زيادة)", "tip": "22 = ولايتين (2 و 2)", "need": 1, "keys": "22|twenty-second|twenty second|too powerful|power", "all": ["(Because of) the 22nd Amendment", "To keep the president from becoming too powerful"], "dyn": false, "senior": false}, {"n": 38, "g": 4, "en": "What is the name of the President of the United States now?", "ar": "مين رئيس أمريكا هلق؟", "say": "{pres}", "arA": "الرئيس الحالي", "tip": "راجع testupdates قبل المقابلة", "need": 1, "keys": "@pres", "all": [], "dyn": true, "senior": true}, {"n": 39, "g": 4, "en": "What is the name of the Vice President of the United States now?", "ar": "مين نائب الرئيس هلق؟", "say": "{vp}", "arA": "نائب الرئيس الحالي", "tip": "راجع testupdates قبل المقابلة", "need": 1, "keys": "@vp", "all": [], "dyn": true, "senior": true}, {"n": 40, "g": 4, "en": "If the president can no longer serve, who becomes president?", "ar": "إذا الرئيس ما عاد يقدر يخدم، مين بيصير رئيس؟", "say": "The Vice President", "arA": "نائب الرئيس", "tip": "أول بالطابور = VP", "need": 1, "keys": "vice", "all": ["The Vice President (of the United States)"], "dyn": false, "senior": false}, {"n": 41, "g": 5, "en": "Name one power of the president.", "ar": "اذكر صلاحية للرئيس", "say": "Signs bills into law", "arA": "بيوقّع مشاريع القوانين (أو بيعمل Veto، قائد الجيش…)", "tip": "الرئيس: يوقّع، يرفض، ينفّذ، قائد أعلى", "need": 1, "keys": "sign|veto|enforce|commander|diplomat|appoint", "all": ["Signs bills into law", "Vetoes bills", "Enforces laws", "Commander in Chief (of the military)", "Chief diplomat", "Appoints federal judges"], "dyn": false, "senior": false}, {"n": 42, "g": 5, "en": "Who is Commander in Chief of the U.S. military?", "ar": "مين القائد الأعلى للجيش؟", "say": "The President", "arA": "الرئيس", "tip": "Commander in Chief = الرئيس", "need": 1, "keys": "president", "all": ["The President (of the United States)"], "dyn": false, "senior": false}, {"n": 43, "g": 5, "en": "Who signs bills to become laws?", "ar": "مين بيوقّع القوانين؟", "say": "The President", "arA": "الرئيس", "tip": "التوقيع = الرئيس", "need": 1, "keys": "president", "all": ["The President (of the United States)"], "dyn": false, "senior": false}, {"n": 44, "g": 5, "en": "Who vetoes bills?", "ar": "مين بيعمل Veto للقوانين؟", "say": "The President", "arA": "الرئيس", "tip": "Veto = رفض. الرئيس", "need": 1, "keys": "president", "all": ["The President (of the United States)"], "dyn": false, "senior": true}, {"n": 45, "g": 5, "en": "Who appoints federal judges?", "ar": "مين بيعيّن القضاة الفيدراليين؟", "say": "The President", "arA": "الرئيس", "tip": "الرئيس بيعيّن والقضاة بيخدموا للأبد", "need": 1, "keys": "president", "all": ["The President (of the United States)"], "dyn": false, "senior": false}, {"n": 46, "g": 5, "en": "The executive branch has many parts. Name one.", "ar": "الفرع التنفيذي إله أجزاء كتيرة. اذكر واحد", "say": "The Cabinet", "arA": "مجلس الوزراء (أو الرئيس، الوزارات)", "tip": "Cabinet = الوزراء", "need": 1, "keys": "president|cabinet|department|agenc", "all": ["President (of the United States)", "Cabinet", "Federal departments and agencies"], "dyn": false, "senior": false}, {"n": 47, "g": 5, "en": "What does the President’s Cabinet do?", "ar": "شو بيعمل مجلس الوزراء (Cabinet)؟", "say": "Advises the President", "arA": "بينصح الرئيس", "tip": "Advise = ينصح", "need": 1, "keys": "advis", "all": ["Advises the President (of the United States)"], "dyn": false, "senior": false}, {"n": 48, "g": 5, "en": "What are two Cabinet-level positions?", "ar": "اذكر منصبين على مستوى الوزراء", "say": "Attorney General and Secretary of Commerce", "arA": "وزير العدل ووزير التجارة", "tip": "أسهل: Attorney General + Secretary of Education", "need": 2, "keys": "attorney general;agriculture;commerce;education;energy;health;homeland;housing;interior;labor;state;transportation;treasury;veterans;defense|war;vice president", "all": ["Attorney General", "Secretary of Agriculture", "Secretary of Commerce", "Secretary of Education", "Secretary of Energy", "Secretary of Health and Human Services", "Secretary of Homeland Security", "Secretary of Housing and Urban Development", "Secretary of the Interior", "Secretary of Labor", "Secretary of State", "Secretary of Transportation", "Secretary of the Treasury", "Secretary of Veterans Affairs", "Secretary of War (Defense)", "Vice-President", "Administrator of the Environmental Protection Agency", "Administrator of the Small Business Administration", "Director of the Central Intelligence Agency", "Director of the Office of Management and Budget", "Director of National Intelligence", "United States Trade Representative"], "dyn": false, "senior": false}, {"n": 49, "g": 6, "en": "Why is the Electoral College important?", "ar": "ليش الـ Electoral College مهم؟", "say": "It decides who is elected president", "arA": "هو اللي بيقرر مين بينتخب رئيس", "tip": "المجمع الانتخابي = بيحسم الرئاسة", "need": 1, "keys": "decide|elect|president|compromise", "all": ["It decides who is elected president.", "It provides a compromise between the popular election of the president and congressional selection."], "dyn": false, "senior": false}, {"n": 50, "g": 6, "en": "What is one part of the judicial branch?", "ar": "اذكر جزء من الفرع القضائي", "say": "Supreme Court", "arA": "المحكمة العليا", "tip": "Supreme Court", "need": 1, "keys": "supreme|court", "all": ["Supreme Court", "Federal Courts"], "dyn": false, "senior": false}, {"n": 51, "g": 6, "en": "What does the judicial branch do?", "ar": "شو بيعمل الفرع القضائي؟", "say": "Reviews laws", "arA": "بيراجع القوانين (وبيحل الخلافات)", "tip": "Judicial = القاضي بيراجع ويحكم", "need": 1, "keys": "review|explain|resolve|dispute|against|decide|constitution", "all": ["Reviews laws", "Explains laws", "Resolves disputes (disagreements) about the law", "Decides if a law goes against the (U.S.) Constitution"], "dyn": false, "senior": false}, {"n": 52, "g": 6, "en": "What is the highest court in the United States?", "ar": "شو أعلى محكمة في أمريكا؟", "say": "Supreme Court", "arA": "المحكمة العليا", "tip": "Supreme = أعلى", "need": 1, "keys": "supreme", "all": ["Supreme Court"], "dyn": false, "senior": true}, {"n": 53, "g": 6, "en": "How many seats are on the Supreme Court?", "ar": "كم مقعد بالمحكمة العليا؟", "say": "Nine (9)", "arA": "تسعة", "tip": "9 قضاة", "need": 1, "keys": "9|nine", "all": ["Nine (9)"], "dyn": false, "senior": false}, {"n": 54, "g": 6, "en": "How many Supreme Court justices are usually needed to decide a case?", "ar": "كم قاضي لازم عشان يحسموا قضية؟", "say": "Five (5)", "arA": "خمسة", "tip": "5 من 9 = الأغلبية", "need": 1, "keys": "5|five", "all": ["Five (5)"], "dyn": false, "senior": false}, {"n": 55, "g": 6, "en": "How long do Supreme Court justices serve?", "ar": "كم مدة خدمة قضاة المحكمة العليا؟", "say": "For life", "arA": "مدى الحياة", "tip": "Life = مدى الحياة", "need": 1, "keys": "life|retire", "all": ["(For) life", "Lifetime appointment", "(Until) retirement"], "dyn": false, "senior": false}, {"n": 56, "g": 6, "en": "Supreme Court justices serve for life. Why?", "ar": "ليش بيخدموا مدى الحياة؟", "say": "To be independent of politics", "arA": "حتى يكونوا مستقلين عن السياسة", "tip": "Independent = مستقل", "need": 1, "keys": "independen|influence|politic", "all": ["To be independent (of politics)", "To limit outside (political) influence"], "dyn": false, "senior": false}, {"n": 57, "g": 7, "en": "Who is the Chief Justice of the United States now?", "ar": "مين رئيس المحكمة العليا (Chief Justice) هلق؟", "say": "{cj}", "arA": "رئيس المحكمة العليا الحالي", "tip": "راجع testupdates", "need": 1, "keys": "@cj", "all": [], "dyn": true, "senior": false}, {"n": 58, "g": 7, "en": "Name one power that is only for the federal government.", "ar": "اذكر صلاحية للحكومة الفيدرالية فقط", "say": "Print paper money", "arA": "طباعة العملة (أو إعلان الحرب، عقد معاهدات)", "tip": "الفيدرالية: عملة، حرب، جيش، معاهدات", "need": 1, "keys": "print|money|mint|coin|declare war|army|treaty|treaties|foreign policy", "all": ["Print paper money", "Mint coins", "Declare war", "Create an army", "Make treaties", "Set foreign policy"], "dyn": false, "senior": false}, {"n": 59, "g": 7, "en": "Name one power that is only for the states.", "ar": "اذكر صلاحية للولايات فقط", "say": "Provide schooling and education", "arA": "المدارس والتعليم (أو الشرطة، رخصة السواقة)", "tip": "الولايات: مدارس، شرطة، رخصة سواقة", "need": 1, "keys": "school|educat|police|protection|fire|safety|driver|license|zoning|land use", "all": ["Provide schooling and education", "Provide protection (police)", "Provide safety (fire departments)", "Give a driver’s license", "Approve zoning and land use"], "dyn": false, "senior": false}, {"n": 60, "g": 7, "en": "What is the purpose of the 10th Amendment?", "ar": "شو الهدف من التعديل العاشر؟", "say": "Powers not given to the federal government belong to the states or to the people", "arA": "الصلاحيات اللي ما أخدتها الحكومة الفيدرالية للولايات أو الشعب", "tip": "10th = اللي مش للفيدرالية = للولايات أو للشعب", "need": 1, "keys": "state|people", "all": ["(It states that the) powers not given to the federal government belong to the states or to the people."], "dyn": false, "senior": false}, {"n": 61, "g": 7, "en": "Who is the governor of your state now?", "ar": "مين حاكم ولايتك هلق؟", "say": "{gov}", "arA": "حاكم ولايتك (عبّيه بالإعدادات)", "tip": "Governor", "need": 1, "keys": "@gov", "all": [], "dyn": true, "senior": true}, {"n": 62, "g": 7, "en": "What is the capital of your state?", "ar": "شو عاصمة ولايتك؟", "say": "{cap}", "arA": "عاصمة ولايتك", "tip": "Capital", "need": 1, "keys": "@cap", "all": [], "dyn": true, "senior": false}, {"n": 63, "g": 7, "en": "There are four amendments to the U.S. Constitution about who can vote. Describe one of them.", "ar": "في 4 تعديلات عن مين بيحق له يصوّت. اذكر واحد", "say": "Citizens eighteen (18) and older can vote", "arA": "المواطنون 18 وأكتر بيصوّتوا", "tip": "18 سنة وفوق", "need": 1, "keys": "18|eighteen|poll tax|pay|any citizen|women|men|race", "all": ["Citizens eighteen (18) and older (can vote).", "You don’t have to pay (a poll tax) to vote.", "Any citizen can vote. (Women and men can vote.)", "A male citizen of any race (can vote)."], "dyn": false, "senior": false}, {"n": 64, "g": 7, "en": "Who can vote in federal elections, run for federal office, and serve on a jury in the United States?", "ar": "مين بيقدر ينتخب ويترشح فيدرالياً ويكون محلّف؟", "say": "Citizens", "arA": "المواطنون", "tip": "Citizens بس — مو Green Card", "need": 1, "keys": "citizen", "all": ["Citizens", "Citizens of the United States", "U.S. citizens"], "dyn": false, "senior": false}, {"n": 65, "g": 8, "en": "What are three rights of everyone living in the United States?", "ar": "اذكر 3 حقوق لكل واحد بيعيش بأمريكا", "say": "Freedom of speech, religion, and assembly", "arA": "حرية التعبير، الدين، التجمّع", "tip": "3 حقوق: كلام - دين - تجمّع (Speech, Religion, Assembly)", "need": 3, "keys": "expression;speech;assembly;petition;religion;bear arms|arms", "all": ["Freedom of expression", "Freedom of speech", "Freedom of assembly", "Freedom to petition the government", "Freedom of religion", "The right to bear arms"], "dyn": false, "senior": false}, {"n": 66, "g": 8, "en": "What do we show loyalty to when we say the Pledge of Allegiance?", "ar": "لمين بنعلن الولاء بـ Pledge of Allegiance؟", "say": "The United States", "arA": "للولايات المتحدة (وللعلم)", "tip": "الولاء للدولة وللعلم", "need": 1, "keys": "united states|flag|america", "all": ["The United States", "The flag"], "dyn": false, "senior": true}, {"n": 67, "g": 8, "en": "Name two promises that new citizens make in the Oath of Allegiance.", "ar": "اذكر وعدين بيعملهم المواطنين الجدد بالقَسَم", "say": "Obey the laws and defend the Constitution", "arA": "يطيعوا القوانين ويدافعوا عن الدستور", "tip": "Oath: طاعة القانون + الدفاع عن الدستور", "need": 2, "keys": "give up|other countr|foreign;defend|constitution;obey|law;military;serve|nation|important work;be loyal", "all": ["Give up loyalty to other countries", "Defend the (U.S.) Constitution", "Obey the laws of the United States", "Serve in the military (if needed)", "Serve (help, do important work for) the nation (if needed)", "Be loyal to the United States"], "dyn": false, "senior": false}, {"n": 68, "g": 8, "en": "How can people become United States citizens?", "ar": "كيف بيصير الشخص مواطن أمريكي؟", "say": "Naturalize", "arA": "بالتجنّس (أو بالولادة بأمريكا)", "tip": "Naturalize = تجنّس، وهاد إنت هلق", "need": 1, "keys": "natural|born|derive", "all": ["Be born in the United States, under the conditions set by the 14th Amendment", "Naturalize", "Derive citizenship (under conditions set by Congress)"], "dyn": false, "senior": false}, {"n": 69, "g": 8, "en": "What are two examples of civic participation in the United States?", "ar": "اذكر مثالين على المشاركة المدنية", "say": "Vote and join a civic group", "arA": "التصويت والانضمام لمجموعة مدنية", "tip": "Vote + Join", "need": 2, "keys": "vote;run for office|office;party;campaign;join|civic group|community group;contact|opinion|elected official;support|oppose|issue", "all": ["Vote", "Run for office", "Join a political party", "Help with a campaign", "Join a civic group", "Join a community group", "Give an elected official your opinion (on an issue)", "Contact elected officials", "Support or oppose an issue or policy", "Write to a newspaper"], "dyn": false, "senior": false}, {"n": 70, "g": 8, "en": "What is one way Americans can serve their country?", "ar": "اذكر طريقة بتخدم فيها الأمريكي بلده", "say": "Vote", "arA": "التصويت (أو دفع الضرائب، الجيش)", "tip": "Vote — أسهل جواب", "need": 1, "keys": "vote|tax|law|military|office|government", "all": ["Vote", "Pay taxes", "Obey the law", "Serve in the military", "Run for office", "Work for local, state, or federal government"], "dyn": false, "senior": false}, {"n": 71, "g": 8, "en": "Why is it important to pay federal taxes?", "ar": "ليش مهم ندفع ضرائب فيدرالية؟", "say": "Required by law", "arA": "لأنه القانون بيفرض", "tip": "Required by law", "need": 1, "keys": "law|fund|civic duty|constitution|16th", "all": ["Required by law", "All people pay to fund the federal government", "Required by the (U.S.) Constitution (16th Amendment)", "Civic duty"], "dyn": false, "senior": false}, {"n": 72, "g": 8, "en": "It is important for all men age 18 through 25 to register for the Selective Service. Name one reason why.", "ar": "الرجال 18-25 لازم يسجلوا بـ Selective Service. ليش؟", "say": "Required by law", "arA": "لأنه القانون بيفرض", "tip": "Required by law (نفس جواب الضرائب)", "need": 1, "keys": "law|civic|draft|fair", "all": ["Required by law", "Civic duty", "Makes the draft fair, if needed"], "dyn": false, "senior": false}, {"n": 73, "g": 9, "en": "The colonists came to America for many reasons. Name one.", "ar": "المستعمرين إجوا لأمريكا لأسباب. اذكر واحد", "say": "Freedom", "arA": "الحرية (أو حرية الدين، فرص اقتصادية)", "tip": "Freedom", "need": 1, "keys": "freedom|liberty|religious|economic|opportunit|persecution|escape", "all": ["Freedom", "Political liberty", "Religious freedom", "Economic opportunity", "Escape persecution"], "dyn": false, "senior": false}, {"n": 74, "g": 9, "en": "Who lived in America before the Europeans arrived?", "ar": "مين كان عايش بأمريكا قبل الأوروبيين؟", "say": "American Indians", "arA": "الهنود الحمر (السكان الأصليين)", "tip": "American Indians / Native Americans", "need": 1, "keys": "indian|native", "all": ["American Indians", "Native Americans"], "dyn": false, "senior": true}, {"n": 75, "g": 9, "en": "What group of people was taken and sold as slaves?", "ar": "أي مجموعة انخطفت وانباعت كعبيد؟", "say": "Africans", "arA": "الأفارقة", "tip": "Africans", "need": 1, "keys": "african|africa", "all": ["Africans", "People from Africa"], "dyn": false, "senior": false}, {"n": 76, "g": 9, "en": "What war did the Americans fight to win independence from Britain?", "ar": "أي حرب خاضها الأمريكان للاستقلال من بريطانيا؟", "say": "The American Revolution", "arA": "الثورة الأمريكية", "tip": "Revolution = ثورة", "need": 1, "keys": "revolution|independence", "all": ["American Revolution", "The (American) Revolutionary War", "War for (American) Independence"], "dyn": false, "senior": false}, {"n": 77, "g": 9, "en": "Name one reason why the Americans declared independence from Britain.", "ar": "اذكر سبب لإعلان الاستقلال عن بريطانيا", "say": "High taxes", "arA": "ضرائب عالية (ضرائب بدون تمثيل)", "tip": "Taxes = ضرائب. Taxation without representation", "need": 1, "keys": "tax|intolerable|coercive|represent|soldiers|quarter|self-government|self government|massacre|tea|stamp|sugar|townshend", "all": ["High taxes", "Taxation without representation", "British soldiers stayed in Americans’ houses (boarding, quartering)", "They did not have self-government", "Boston Massacre", "Boston Tea Party (Tea Act)", "Stamp Act", "Sugar Act", "Townshend Acts", "Intolerable (Coercive) Acts"], "dyn": false, "senior": false}, {"n": 78, "g": 9, "en": "Who wrote the Declaration of Independence?", "ar": "مين كتب إعلان الاستقلال؟", "say": "Thomas Jefferson", "arA": "توماس جيفرسون", "tip": "Jefferson = Declaration", "need": 1, "keys": "jefferson", "all": ["(Thomas) Jefferson"], "dyn": false, "senior": true}, {"n": 79, "g": 9, "en": "When was the Declaration of Independence adopted?", "ar": "متى تبنّوا إعلان الاستقلال؟", "say": "July 4, 1776", "arA": "4 تموز 1776", "tip": "4 تموز، 1776", "need": 1, "keys": "july 4|4th|fourth of july|july fourth|1776", "all": ["July 4, 1776"], "dyn": false, "senior": false}, {"n": 80, "g": 9, "en": "The American Revolution had many important events. Name one.", "ar": "اذكر حدث مهم بالثورة الأمريكية", "say": "Battle of Yorktown", "arA": "معركة يوركتاون (أو Valley Forge، Saratoga)", "tip": "Yorktown = استسلام بريطانيا", "need": 1, "keys": "bunker|declaration|delaware|trenton|saratoga|valley forge|yorktown", "all": ["(Battle of) Bunker Hill", "Declaration of Independence", "Washington Crossing the Delaware (Battle of Trenton)", "(Battle of) Saratoga", "Valley Forge (Encampment)", "(Battle of) Yorktown (British surrender at Yorktown)"], "dyn": false, "senior": false}, {"n": 81, "g": 10, "en": "There were 13 original states. Name five.", "ar": "كان في 13 ولاية أصلية. اذكر 5", "say": "New Hampshire, Massachusetts, Virginia, New York, Georgia", "arA": "نيو هامبشير، ماساتشوستس، فيرجينيا، نيويورك، جورجيا", "tip": "ولايتك Virginia منهم! والباقي: Georgia, New York...", "need": 5, "keys": "new hampshire;massachusetts;rhode island;connecticut;new york;new jersey;pennsylvania;delaware;maryland;virginia;north carolina;south carolina;georgia", "all": ["New Hampshire", "Massachusetts", "Rhode Island", "Connecticut", "New York", "New Jersey", "Pennsylvania", "Delaware", "Maryland", "Virginia", "North Carolina", "South Carolina", "Georgia"], "dyn": false, "senior": false}, {"n": 82, "g": 10, "en": "What founding document was written in 1787?", "ar": "أي وثيقة انكتبت سنة 1787؟", "say": "The Constitution", "arA": "الدستور", "tip": "1787 = Constitution", "need": 1, "keys": "constitution", "all": ["(U.S.) Constitution"], "dyn": false, "senior": false}, {"n": 83, "g": 10, "en": "The Federalist Papers supported the passage of the U.S. Constitution. Name one of the writers.", "ar": "Federalist Papers دعمت الدستور. اذكر كاتب", "say": "James Madison", "arA": "جيمس ماديسون (أو هاملتون، جاي)", "tip": "Madison / Hamilton / Jay", "need": 1, "keys": "madison|hamilton|jay|publius", "all": ["(James) Madison", "(Alexander) Hamilton", "(John) Jay", "Publius"], "dyn": false, "senior": false}, {"n": 84, "g": 10, "en": "Why were the Federalist Papers important?", "ar": "ليش Federalist Papers مهمة؟", "say": "They helped people understand the Constitution", "arA": "ساعدت الناس يفهموا الدستور", "tip": "Understand = يفهموا", "need": 1, "keys": "understand|support|constitution", "all": ["They helped people understand the (U.S.) Constitution.", "They supported passing the (U.S.) Constitution."], "dyn": false, "senior": false}, {"n": 85, "g": 10, "en": "Benjamin Franklin is famous for many things. Name one.", "ar": "بنجامين فرانكلين مشهور بأشياء. اذكر واحد", "say": "Inventor", "arA": "مخترع (أو أول رئيس بريد)", "tip": "Franklin = Inventor", "need": 1, "keys": "librar|postmaster|declaration|invent|diplomat", "all": ["Founded the first free public libraries", "First Postmaster General of the United States", "Helped write the Declaration of Independence", "Inventor", "U.S. diplomat"], "dyn": false, "senior": false}, {"n": 86, "g": 10, "en": "George Washington is famous for many things. Name one.", "ar": "جورج واشنطن مشهور بأشياء. اذكر واحد", "say": "First president of the United States", "arA": "أول رئيس لأمريكا", "tip": "Washington = First president", "need": 1, "keys": "father|first president|general|continental|constitutional convention", "all": ["“Father of Our Country”", "First president of the United States", "General of the Continental Army", "President of the Constitutional Convention"], "dyn": false, "senior": true}, {"n": 87, "g": 10, "en": "Thomas Jefferson is famous for many things. Name one.", "ar": "توماس جيفرسون مشهور بأشياء. اذكر واحد", "say": "Writer of the Declaration of Independence", "arA": "كاتب إعلان الاستقلال", "tip": "Jefferson = كتب الإعلان", "need": 1, "keys": "declaration|third president|louisiana|secretary of state|university|virginia", "all": ["Writer of the Declaration of Independence", "Third president of the United States", "Doubled the size of the United States (Louisiana Purchase)", "First Secretary of State", "Founded the University of Virginia", "Writer of the Virginia Statute on Religious Freedom"], "dyn": false, "senior": false}, {"n": 88, "g": 10, "en": "James Madison is famous for many things. Name one.", "ar": "جيمس ماديسون مشهور بأشياء. اذكر واحد", "say": "Father of the Constitution", "arA": "أبو الدستور", "tip": "Madison = Father of the Constitution", "need": 1, "keys": "father of the constitution|fourth|1812|federalist", "all": ["“Father of the Constitution”", "Fourth president of the United States", "President during the War of 1812", "One of the writers of the Federalist Papers"], "dyn": false, "senior": false}, {"n": 89, "g": 11, "en": "Alexander Hamilton is famous for many things. Name one.", "ar": "ألكسندر هاملتون مشهور بأشياء. اذكر واحد", "say": "First Secretary of the Treasury", "arA": "أول وزير خزانة", "tip": "Hamilton = Treasury (على ورقة العشرة دولار)", "need": 1, "keys": "treasury|federalist|bank|aide|washington|continental", "all": ["First Secretary of the Treasury", "One of the writers of the Federalist Papers", "Helped establish the First Bank of the United States", "Aide to General George Washington", "Member of the Continental Congress"], "dyn": false, "senior": false}, {"n": 90, "g": 11, "en": "What territory did the United States buy from France in 1803?", "ar": "أي منطقة اشترتها أمريكا من فرنسا سنة 1803؟", "say": "Louisiana Territory", "arA": "منطقة لويزيانا", "tip": "Louisiana 1803", "need": 1, "keys": "louisiana", "all": ["Louisiana Territory", "Louisiana"], "dyn": false, "senior": false}, {"n": 91, "g": 11, "en": "Name one war fought by the United States in the 1800s.", "ar": "اذكر حرب خاضتها أمريكا بالقرن 19", "say": "War of 1812", "arA": "حرب 1812 (أو الحرب الأهلية)", "tip": "1800s: 1812, Mexican, Civil, Spanish", "need": 1, "keys": "1812|mexican|civil|spanish", "all": ["War of 1812", "Mexican-American War", "Civil War", "Spanish-American War"], "dyn": false, "senior": false}, {"n": 92, "g": 11, "en": "Name the U.S. war between the North and the South.", "ar": "شو اسم الحرب بين الشمال والجنوب؟", "say": "The Civil War", "arA": "الحرب الأهلية", "tip": "Civil War", "need": 1, "keys": "civil", "all": ["The Civil War"], "dyn": false, "senior": false}, {"n": 93, "g": 11, "en": "The Civil War had many important events. Name one.", "ar": "اذكر حدث مهم بالحرب الأهلية", "say": "Emancipation Proclamation", "arA": "إعلان تحرير العبيد (أو معركة Gettysburg)", "tip": "Emancipation = تحرير", "need": 1, "keys": "sumter|emancipation|vicksburg|gettysburg|sherman|appomattox|antietam|sharpsburg|lincoln", "all": ["(Battle of) Fort Sumter", "Emancipation Proclamation", "(Battle of) Vicksburg", "(Battle of) Gettysburg", "Sherman’s March", "(Surrender at) Appomattox", "(Battle of) Antietam/Sharpsburg", "Lincoln was assassinated."], "dyn": false, "senior": false}, {"n": 94, "g": 11, "en": "Abraham Lincoln is famous for many things. Name one.", "ar": "أبراهام لينكولن مشهور بأشياء. اذكر واحد", "say": "Freed the slaves", "arA": "حرّر العبيد", "tip": "Lincoln = Freed the slaves", "need": 1, "keys": "free|slave|emancip|union|civil war|16th|sixteenth|gettysburg", "all": ["Freed the slaves (Emancipation Proclamation)", "Saved (or preserved) the Union", "Led the United States during the Civil War", "16th president of the United States", "Delivered the Gettysburg Address"], "dyn": false, "senior": true}, {"n": 95, "g": 11, "en": "What did the Emancipation Proclamation do?", "ar": "شو عمل إعلان تحرير العبيد؟", "say": "Freed the slaves", "arA": "حرّر العبيد", "tip": "Emancipation = تحرير", "need": 1, "keys": "free", "all": ["Freed the slaves", "Freed slaves in the Confederacy", "Freed slaves in the Confederate states", "Freed slaves in most Southern states"], "dyn": false, "senior": false}, {"n": 96, "g": 11, "en": "What U.S. war ended slavery?", "ar": "أي حرب أنهت العبودية؟", "say": "The Civil War", "arA": "الحرب الأهلية", "tip": "Civil War", "need": 1, "keys": "civil", "all": ["The Civil War"], "dyn": false, "senior": false}, {"n": 97, "g": 12, "en": "What amendment says all persons born or naturalized in the United States, and subject to the jurisdiction thereof, are U.S. citizens?", "ar": "أي تعديل بيقول كل المولودين أو المتجنّسين مواطنين؟", "say": "14th Amendment", "arA": "التعديل 14", "tip": "14 = مواطنة", "need": 1, "keys": "14|fourteenth", "all": ["14th Amendment"], "dyn": false, "senior": false}, {"n": 98, "g": 12, "en": "When did all men get the right to vote?", "ar": "متى أخدوا كل الرجال حق التصويت؟", "say": "After the Civil War", "arA": "بعد الحرب الأهلية", "tip": "التعديل 15 (1870)", "need": 1, "keys": "civil war|reconstruction|15|fifteenth|1870", "all": ["After the Civil War", "During Reconstruction", "(With the) 15th Amendment", "1870"], "dyn": false, "senior": false}, {"n": 99, "g": 12, "en": "Name one leader of the women’s rights movement in the 1800s.", "ar": "اذكر قائدة لحركة حقوق المرأة بالقرن 19", "say": "Susan B. Anthony", "arA": "سوزان بي. أنتوني", "tip": "Susan B. Anthony", "need": 1, "keys": "anthony|stanton|sojourner|truth|tubman|mott|stone", "all": ["Susan B. Anthony", "Elizabeth Cady Stanton", "Sojourner Truth", "Harriet Tubman", "Lucretia Mott", "Lucy Stone"], "dyn": false, "senior": false}, {"n": 100, "g": 12, "en": "Name one war fought by the United States in the 1900s.", "ar": "اذكر حرب خاضتها أمريكا بالقرن 20", "say": "World War II", "arA": "الحرب العالمية الثانية", "tip": "WWI, WWII, Korean, Vietnam, Gulf", "need": 1, "keys": "world war|korean|vietnam|gulf", "all": ["World War I", "World War II", "Korean War", "Vietnam War", "(Persian) Gulf War"], "dyn": false, "senior": false}, {"n": 101, "g": 12, "en": "Why did the United States enter World War I?", "ar": "ليش دخلت أمريكا الحرب العالمية الأولى؟", "say": "Because Germany attacked U.S. ships", "arA": "لأنه ألمانيا هاجمت سفن أمريكية", "tip": "Germany + ships", "need": 1, "keys": "german|ally|allied|central powers|ship", "all": ["Because Germany attacked U.S. (civilian) ships", "To support the Allied Powers (England, France, Italy, and Russia)", "To oppose the Central Powers (Germany, Austria-Hungary, the Ottoman Empire, and Bulgaria)"], "dyn": false, "senior": false}, {"n": 102, "g": 12, "en": "When did all women get the right to vote?", "ar": "متى أخدت كل النساء حق التصويت؟", "say": "1920", "arA": "سنة 1920 (التعديل 19)", "tip": "1920 = 19th Amendment", "need": 1, "keys": "1920|19|nineteenth|world war", "all": ["1920", "After World War I", "(With the) 19th Amendment"], "dyn": false, "senior": false}, {"n": 103, "g": 12, "en": "What was the Great Depression?", "ar": "شو كان الكساد العظيم (Great Depression)؟", "say": "The longest economic recession in modern history", "arA": "أطول ركود اقتصادي بالتاريخ الحديث", "tip": "Depression = ركود", "need": 1, "keys": "recession|economic|economy", "all": ["Longest economic recession in modern history"], "dyn": false, "senior": false}, {"n": 104, "g": 12, "en": "When did the Great Depression start?", "ar": "متى بلّش الكساد العظيم؟", "say": "The stock market crash of 1929", "arA": "انهيار البورصة سنة 1929", "tip": "1929", "need": 1, "keys": "1929|crash", "all": ["The Great Crash (1929)", "Stock market crash of 1929"], "dyn": false, "senior": false}, {"n": 105, "g": 13, "en": "Who was president during the Great Depression and World War II?", "ar": "مين كان رئيس بالكساد العظيم والحرب العالمية الثانية؟", "say": "Franklin Roosevelt", "arA": "فرانكلين روزفلت", "tip": "FDR", "need": 1, "keys": "roosevelt", "all": ["(Franklin) Roosevelt"], "dyn": false, "senior": false}, {"n": 106, "g": 13, "en": "Why did the United States enter World War II?", "ar": "ليش دخلت أمريكا الحرب العالمية الثانية؟", "say": "Japan attacked Pearl Harbor", "arA": "لأنه اليابان هاجمت بيرل هاربر", "tip": "Pearl Harbor", "need": 1, "keys": "pearl harbor|ally|allied|axis", "all": ["(Bombing of) Pearl Harbor", "Japanese attacked Pearl Harbor", "To support the Allied Powers (England, France, and Russia)", "To oppose the Axis Powers (Germany, Italy, and Japan)"], "dyn": false, "senior": false}, {"n": 107, "g": 13, "en": "Dwight Eisenhower is famous for many things. Name one.", "ar": "دوايت أيزنهاور مشهور بأشياء. اذكر واحد", "say": "34th president of the United States", "arA": "الرئيس الـ 34", "tip": "Eisenhower = 34th", "need": 1, "keys": "general|korean|34|thirty-fourth|highway|interstate", "all": ["General during World War II", "President at the end of (during) the Korean War", "34th president of the United States", "Signed the Federal-Aid Highway Act of 1956 (Created the Interstate System)"], "dyn": false, "senior": false}, {"n": 108, "g": 13, "en": "Who was the United States’ main rival during the Cold War?", "ar": "مين كان خصم أمريكا الرئيسي بالحرب الباردة؟", "say": "The Soviet Union", "arA": "الاتحاد السوفييتي", "tip": "Soviet Union / USSR", "need": 1, "keys": "soviet|ussr|russia", "all": ["Soviet Union", "USSR", "Russia"], "dyn": false, "senior": false}, {"n": 109, "g": 13, "en": "During the Cold War, what was one main concern of the United States?", "ar": "شو كان هم أمريكا الرئيسي بالحرب الباردة؟", "say": "Communism", "arA": "الشيوعية (أو الحرب النووية)", "tip": "Communism", "need": 1, "keys": "communis|nuclear", "all": ["Communism", "Nuclear war"], "dyn": false, "senior": false}, {"n": 110, "g": 13, "en": "Why did the United States enter the Korean War?", "ar": "ليش دخلت أمريكا حرب كوريا؟", "say": "To stop the spread of communism", "arA": "لوقف انتشار الشيوعية", "tip": "Communism", "need": 1, "keys": "communis", "all": ["To stop the spread of communism"], "dyn": false, "senior": false}, {"n": 111, "g": 13, "en": "Why did the United States enter the Vietnam War?", "ar": "ليش دخلت أمريكا حرب فيتنام؟", "say": "To stop the spread of communism", "arA": "لوقف انتشار الشيوعية", "tip": "Communism (نفس كوريا)", "need": 1, "keys": "communis", "all": ["To stop the spread of communism"], "dyn": false, "senior": false}, {"n": 112, "g": 13, "en": "What did the civil rights movement do?", "ar": "شو عملت حركة الحقوق المدنية؟", "say": "Fought to end racial discrimination", "arA": "حاربت لإنهاء التمييز العنصري", "tip": "Discrimination = تمييز", "need": 1, "keys": "discriminat|racial|equal|racis|civil rights", "all": ["Fought to end racial discrimination"], "dyn": false, "senior": false}, {"n": 113, "g": 14, "en": "Martin Luther King, Jr. is famous for many things. Name one.", "ar": "مارتن لوثر كينغ مشهور بأشياء. اذكر واحد", "say": "Fought for civil rights", "arA": "حارب لأجل الحقوق المدنية", "tip": "MLK = Civil rights", "need": 1, "keys": "civil rights|equality|equal|color of their skin|judged", "all": ["Fought for civil rights", "Worked for equality for all Americans", "Worked to ensure that people would “not be judged by the color of their skin, but by the content of their character”"], "dyn": false, "senior": true}, {"n": 114, "g": 14, "en": "Why did the United States enter the Persian Gulf War?", "ar": "ليش دخلت أمريكا حرب الخليج؟", "say": "To force the Iraqi military from Kuwait", "arA": "لإخراج الجيش العراقي من الكويت", "tip": "Iraq + Kuwait", "need": 1, "keys": "iraq|kuwait", "all": ["To force the Iraqi military from Kuwait"], "dyn": false, "senior": false}, {"n": 115, "g": 14, "en": "What major event happened on September 11, 2001 in the United States?", "ar": "شو الحدث الكبير يوم 11 أيلول 2001؟", "say": "Terrorists attacked the United States", "arA": "إرهابيون هاجموا أمريكا", "tip": "9/11", "need": 1, "keys": "terror|attack|world trade|pentagon|plane", "all": ["Terrorists attacked the United States", "Terrorists took over two planes and crashed them into the World Trade Center in New York City", "Terrorists took over a plane and crashed into the Pentagon in Arlington, Virginia", "Terrorists took over a plane originally aimed at Washington, D.C., and crashed in a field in Pennsylvania"], "dyn": false, "senior": true}, {"n": 116, "g": 14, "en": "Name one U.S. military conflict after the September 11, 2001 attacks.", "ar": "اذكر نزاع عسكري بعد 11 أيلول", "say": "War in Afghanistan", "arA": "حرب أفغانستان (أو العراق، الحرب على الإرهاب)", "tip": "Afghanistan / Iraq", "need": 1, "keys": "terror|afghanistan|iraq", "all": ["(Global) War on Terror", "War in Afghanistan", "War in Iraq"], "dyn": false, "senior": false}, {"n": 117, "g": 14, "en": "Name one American Indian tribe in the United States.", "ar": "اذكر قبيلة هندية أمريكية", "say": "Cherokee", "arA": "تشيروكي (أو Navajo، Apache)", "tip": "Cherokee", "need": 1, "keys": "apache|blackfeet|cayuga|cherokee|cheyenne|chippewa|choctaw|creek|crow|hopi|huron|inupiat|lakota|mohawk|mohegan|navajo|oneida|onondaga|pueblo|seminole|seneca|shawnee|sioux|teton|tuscarora", "all": ["Apache", "Blackfeet", "Cayuga", "Cherokee", "Cheyenne", "Chippewa", "Choctaw", "Creek", "Crow", "Hopi", "Huron", "Inupiat", "Lakota", "Mohawk", "Mohegan", "Navajo", "Oneida", "Onondaga", "Pueblo", "Seminole", "Seneca", "Shawnee", "Sioux", "Teton", "Tuscarora"], "dyn": false, "senior": false}, {"n": 118, "g": 14, "en": "Name one example of an American innovation.", "ar": "اذكر مثال لابتكار أمريكي", "say": "Light bulb", "arA": "المصباح الكهربائي (أو الطيارة، السيارة)", "tip": "Light bulb", "need": 1, "keys": "light bulb|automobile|car|skyscraper|airplane|assembly line|moon|integrated circuit", "all": ["Light bulb", "Automobile (cars, internal combustion engine)", "Skyscrapers", "Airplane", "Assembly line", "Landing on the moon", "Integrated circuit (IC)"], "dyn": false, "senior": false}, {"n": 119, "g": 14, "en": "What is the capital of the United States?", "ar": "شو عاصمة أمريكا؟", "say": "Washington, D.C.", "arA": "واشنطن العاصمة", "tip": "Washington, D.C.", "need": 1, "keys": "washington", "all": ["Washington, D.C."], "dyn": false, "senior": false}, {"n": 120, "g": 14, "en": "Where is the Statue of Liberty?", "ar": "وين تمثال الحرية؟", "say": "New York Harbor", "arA": "ميناء نيويورك (جزيرة ليبرتي)", "tip": "Liberty Island", "need": 1, "keys": "new york|liberty island|new jersey|hudson", "all": ["New York (Harbor)", "Liberty Island", "New Jersey", "near New York City", "on the Hudson (River)"], "dyn": false, "senior": false}, {"n": 121, "g": 15, "en": "Why does the flag have 13 stripes?", "ar": "ليش بالعلم 13 خط؟", "say": "Because there were 13 original colonies", "arA": "لأنه كان في 13 مستعمرة أصلية", "tip": "13 خط = 13 مستعمرة", "need": 1, "keys": "13|thirteen|original|colonies", "all": ["(Because there were) 13 original colonies", "(Because the stripes) represent the original colonies"], "dyn": false, "senior": true}, {"n": 122, "g": 15, "en": "Why does the flag have 50 stars?", "ar": "ليش بالعلم 50 نجمة؟", "say": "One star for each state", "arA": "نجمة لكل ولاية", "tip": "50 نجمة = 50 ولاية", "need": 1, "keys": "state|50|fifty", "all": ["(Because there is) one star for each state", "(Because) each star represents a state", "(Because there are) 50 states"], "dyn": false, "senior": false}, {"n": 123, "g": 15, "en": "What is the name of the national anthem?", "ar": "شو اسم النشيد الوطني؟", "say": "The Star-Spangled Banner", "arA": "ذا ستار سبانغلد بانر", "tip": "Star-Spangled Banner", "need": 1, "keys": "star-spangled|star spangled", "all": ["The Star-Spangled Banner"], "dyn": false, "senior": false}, {"n": 124, "g": 15, "en": "The Nation’s first motto was “E Pluribus Unum.” What does that mean?", "ar": "شعار أمريكا الأول E Pluribus Unum. شو معناه؟", "say": "Out of many, one", "arA": "من الكتير، واحد", "tip": "Out of many, one", "need": 1, "keys": "many|one", "all": ["Out of many, one", "We all become one"], "dyn": false, "senior": false}, {"n": 125, "g": 15, "en": "What is Independence Day?", "ar": "شو هو عيد الاستقلال؟", "say": "The country's birthday", "arA": "عيد ميلاد الدولة (4 تموز)", "tip": "Independence Day = عيد ميلاد أمريكا", "need": 1, "keys": "independence|birthday|celebrat", "all": ["A holiday to celebrate U.S. independence (from Britain)", "The country’s birthday"], "dyn": false, "senior": false}, {"n": 126, "g": 15, "en": "Name three national U.S. holidays.", "ar": "اذكر 3 أعياد وطنية أمريكية", "say": "Thanksgiving, Christmas, and Independence Day", "arA": "الشكر، الميلاد، الاستقلال", "tip": "أسهل 3: Thanksgiving, Christmas, Independence Day", "need": 3, "keys": "new year;martin luther|mlk;presidents|washington;memorial;juneteenth;independence;labor;columbus;veterans;thanksgiving;christmas", "all": ["New Year’s Day", "Martin Luther King, Jr. Day", "Presidents Day (Washington’s Birthday)", "Memorial Day", "Juneteenth", "Independence Day", "Labor Day", "Columbus Day", "Veterans Day", "Thanksgiving Day", "Christmas Day"], "dyn": false, "senior": true}, {"n": 127, "g": 15, "en": "What is Memorial Day?", "ar": "شو هو Memorial Day؟", "say": "A holiday to honor soldiers who died in military service", "arA": "يوم لتكريم الجنود اللي ماتوا بالخدمة", "tip": "Memorial = ذكرى الموتى", "need": 1, "keys": "soldier|died|honor|military", "all": ["A holiday to honor soldiers who died in military service"], "dyn": false, "senior": false}, {"n": 128, "g": 15, "en": "What is Veterans Day?", "ar": "شو هو Veterans Day؟", "say": "A holiday to honor people who have served in the military", "arA": "يوم لتكريم اللي خدموا بالجيش", "tip": "Veterans = المحاربين القدامى (الأحياء)", "need": 1, "keys": "honor|military|served|veteran", "all": ["A holiday to honor people in the (U.S.) military", "A holiday to honor people who have served (in the U.S. military)"], "dyn": false, "senior": false}], "themes": ["الدستور وأساسياته", "الإعلان والفروع الثلاثة", "الكونغرس والسيناتورات", "النواب والانتخابات", "الرئيس 1", "الرئيس والوزراء", "المحكمة العليا", "الولايات والحقوق", "الحقوق والواجبات", "الاستعمار والثورة", "الآباء المؤسسون", "القرن 19 والحرب الأهلية", "الحقوق والقرن 20", "الحروب العالمية والباردة", "الحقوق المدنية و11 أيلول", "الرموز والأعياد"]};
+const Q = DATA.q, THEMES = DATA.themes, NG = 16;
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- state ---------- */
+const DEF = {pres:'Donald Trump', vp:'JD Vance', speaker:'Mike Johnson', cj:'John Roberts',
+  sen:'Mark Warner, Tim Kaine', gov:'Abigail Spanberger', cap:'Richmond', rep:'',
+  name:'', addr:'', marital:'', kids:'', job:'', trips:'', taxes:''};
+let S = {prog:{}, groups:{}, me:Object.assign({}, DEF), arVoice:true};
+try { const r = localStorage.getItem('m4cit1'); if (r) { const o = JSON.parse(r); S = Object.assign(S, o); S.me = Object.assign({}, DEF, o.me || {}); } } catch(e) {}
+function save() { try { localStorage.setItem('m4cit1', JSON.stringify(S)); } catch(e) {} }
+const P = n => (S.prog[n] = S.prog[n] || {r:0, w:0, box:0});
+const grp = g => (S.groups[g] = S.groups[g] || {learned:false, mastered:false, best:null});
+const inG = g => Q.filter(q => q.g === g);
+const sayText = q => q.say.replace(/\{(\w+)\}/g, (m, k) => S.me[k] || '(؟ عبّيه بالإعدادات)');
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const qOf = n => Q[n - 1];
+
+/* ---------- teacher voice ---------- */
+let voices = [];
+function loadVoices() { try { voices = speechSynthesis.getVoices() || []; } catch(e) {} }
+try { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; } catch(e) {}
+function speak(text, lang, rate, cb) {
+  try {
+    try { AU.pause(); } catch(e) {}
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = lang || 'en-US'; u.rate = rate || 0.88;
+    const v = voices.find(v => v.lang === u.lang) || voices.find(v => v.lang.startsWith(u.lang.slice(0, 2)));
+    if (v) u.voice = v;
+    if (cb) u.onend = cb;
+    speechSynthesis.speak(u);
+  } catch(e) { if (cb) cb(); }
+}
+let AUDIO = {}, AUREADY = false, REC = null;
+const AU = new Audio();
+function stopAll() { try { AU.pause(); } catch(e) {} try { speechSynthesis.cancel(); } catch(e) {} try { if (REC) { REC.onend = null; REC.abort(); REC = null; } } catch(e) {} }
+function loadAudio() {
+  fetch('audio.json').then(r => r.json()).then(j => { AUDIO = j; AUREADY = true; const e = document.getElementById('aust'); if (e) e.textContent = '🔊 الصوت الطبيعي جاهز'; }).catch(() => { const e = document.getElementById('aust'); if (e) e.textContent = 'الصوت الطبيعي مش متوفر — عم أستعمل صوت الجوال'; });
+}
+function clip(key, fb, cb, rate) {
+  stopAll();
+  if (AUDIO[key]) {
+    AU.onended = () => { if (cb) cb(); };
+    AU.src = 'data:audio/mpeg;base64,' + AUDIO[key];
+    const p = AU.play(); if (p && p.catch) p.catch(() => speak(fb, 'en-US', rate || 0.88, cb));
+  } else speak(fb, 'en-US', rate || 0.88, cb);
+}
+const sayEn = t => speak(t, 'en-US', 0.88);
+function sayBoth(en, ar) { speak(en, 'en-US', 0.88, () => { if (S.arVoice && ar) setTimeout(() => speak(ar, 'ar-SA', 0.95), 250); }); }
+const PRAISE = ['Great job!', 'Excellent!', 'That is correct!', 'Perfect!', 'Very good!'];
+const TRY = ['Not quite. Listen to the answer.', 'Almost. Let us try again later.', 'Not correct. Listen carefully.'];
+const rnd = a => a[Math.floor(Math.random() * a.length)];
+
+/* ---------- grading ---------- */
+function norm(s) { return ' ' + String(s).toLowerCase().replace(/[’']/g, '').replace(/[^a-z0-9]+/g, ' ').trim() + ' '; }
+function hasKey(t, k) {
+  k = norm(k).trim();
+  if (!k) return false;
+  if (/^\d+$/.test(k)) return new RegExp('(^|\\s)' + k + '(st|nd|rd|th)?(\\s|$)').test(t);
+  return t.includes(' ' + k);   // matches word starts: law -> laws, tax -> taxes, free -> freed
+}
+function dynTokens(key) {
+  const v = S.me[key.slice(1)] || '';
+  return v.toLowerCase().replace(/[^a-z\s]/g, ' ').split(/\s+/).filter(w => w.length >= 3);
+}
+function grade(q, text) {
+  const t = norm(text);
+  if (t.trim().length < 1) return {ok:false, hits:0};
+  const groups = q.keys.split(';');
+  let hits = 0;
+  for (const g of groups) {
+    let alts = g.split('|');
+    if (alts[0].startsWith('@')) {
+      const toks = dynTokens(alts[0]);
+      if (!toks.length) return {ok: t.trim().length > 2, hits: 1, unverified: true};
+      alts = toks;
+    }
+    if (alts.some(k => hasKey(t, k))) hits++;
+  }
+  return {ok: hits >= q.need, hits};
+}
+
+/* ---------- nav ---------- */
+const hist = [];
+let cur = {name:'home', arg:null};
+function go(name, arg, push) {
+  if (push !== false) hist.push(cur);
+  cur = {name, arg};
+  stopAll();
+  window.scrollTo(0, 0);
+  R[name](arg);
+}
+function back() { const p = hist.pop(); if (p) { cur = p; stopAll(); R[p.name](p.arg); window.scrollTo(0, 0); } else go('home', null, false); }
+function shell(title, sub, body, noBack) {
+  $('#app').innerHTML = `<div class="top">${noBack ? '' : '<button class="back" onclick="back()">→</button>'}
+  <div class="logo"><b>m4</b><i>TECH</i></div><h1>${title}<small>${sub || ''}</small></h1></div>${body}`;
+}
+const bar = p => `<div class="bar"><div style="width:${Math.round(p * 100)}%"></div></div>`;
+
+const R = {};
+/* ---------- home ---------- */
+R.home = () => {
+  let mastered = 0, learned = 0;
+  for (let g = 0; g < NG; g++) { if (grp(g).mastered) mastered++; if (grp(g).learned) learned++; }
+  const seen = Object.keys(S.prog).filter(n => S.prog[n].r > 0).length;
+  const weak = Q.filter(q => P(q.n).w > P(q.n).r).length;
+  shell('M4TECH Citizenship Coach', 'معلّم اختبار الجنسية — النسخة الجديدة (128 سؤال)', `
+  <div class="card hl"><b>تقدّمك</b><div class="small">مجموعات مثبّتة ${mastered} من ${NG} • أسئلة جاوبتها صح ${seen} من 128</div>${bar(mastered / NG)}
+  <div class="small">الاختبار الحقيقي: الضابط بيسأل لحد 20 سؤال من الـ128 وبتنجح بـ 12 جواب صح.</div></div>
+  <button class="btn pri" onclick="go('groups')">📚 ابدأ الحفظ (16 مجموعة × 8 أسئلة)</button>
+  <button class="btn" onclick="startReview()">🔁 مراجعة ${weak ? 'الأسئلة الضعيفة (' + weak + ')' : 'من المجموعات اللي خلصتها'}</button>
+  <button class="btn" onclick="startMock()">🎤 اختبار تجريبي مثل الضابط (20 سؤال)</button>
+  <button class="btn" onclick="go('interview')">🧑‍💼 المقابلة كاملة (الأسئلة غير الـ civics)</button>
+  <button class="btn" onclick="go('settings')">⚙️ إعداداتي (السيناتور، الحاكم، الرئيس…)</button>
+  <div class="card small" id="aust">${AUREADY ? '🔊 الصوت الطبيعي جاهز' : '⏳ عم يتحمّل الصوت الطبيعي…'}</div><div class="card small">الأجوبة اللي بتتغيّر (الرئيس، نائبه، رئيس النواب، رئيس المحكمة، سيناتوراتك، حاكمك) لازم تتأكد منها قبل المقابلة من uscis.gov/citizenship/testupdates وتعدّلها بالإعدادات.</div>`, true);
+};
+
+/* ---------- settings ---------- */
+R.settings = () => {
+  const f = (k, l, ph) => `<label>${l}</label><input type="text" id="s_${k}" value="${esc(S.me[k] || '')}" placeholder="${ph || ''}">`;
+  shell('إعداداتي', 'أجوبة بتتغيّر + معلوماتك الشخصية', `
+  <div class="card"><b>أجوبة الـ civics المتغيّرة</b><div class="small">تأكد منها من uscis.gov/citizenship/testupdates وhouse.gov</div>
+  ${f('pres', 'الرئيس (سؤال 38)')}${f('vp', 'نائب الرئيس (سؤال 39)')}${f('speaker', 'رئيس مجلس النواب (سؤال 30)')}${f('cj', 'رئيس المحكمة العليا (سؤال 57)')}
+  ${f('sen', 'سيناتورات ولايتك (سؤال 23) — اكتب الاثنين')}${f('rep', 'النائب عن منطقتك (سؤال 29) — افحص house.gov', 'اكتب اسمه')}${f('gov', 'حاكم الولاية (سؤال 61)')}${f('cap', 'عاصمة الولاية (سؤال 62)')}</div>
+  <div class="card"><b>معلوماتك للمقابلة (بتنحفظ عندك بس)</b><div class="small">لازم تطابق ورقة N-400 اللي قدّمتها بالحرف.</div>
+  ${f('name', 'اسمك الكامل مثل N-400')}${f('addr', 'عنوانك ومنذ متى ساكن فيه')}${f('marital', 'الحالة الاجتماعية (واسم الزوجة)')}${f('kids', 'الأولاد (العدد والأسماء)')}${f('job', 'شغلك')}${f('trips', 'السفرات خارج أمريكا من وقت الإقامة')}${f('taxes', 'الضرائب: بتقدّمها كل سنة؟')}</div>
+  <div class="card"><label><input type="checkbox" id="s_ar" ${S.arVoice ? 'checked' : ''}> المعلّم يقرأ الترجمة العربية بعد الإنجليزي</label></div>
+  <button class="btn pri" onclick="saveSettings()">حفظ</button>`);
+};
+function saveSettings() {
+  Object.keys(DEF).forEach(k => { const e = $('#s_' + k); if (e) S.me[k] = e.value.trim(); });
+  S.arVoice = $('#s_ar').checked; save(); back();
+}
+
+/* ---------- groups ---------- */
+R.groups = () => {
+  const tiles = Array.from({length: NG}, (_, g) => {
+    const s = grp(g), cls = s.mastered ? 'm' : (s.learned ? 'l' : '');
+    return `<button class="g ${cls}" onclick="go('group',${g})"><b>م${g + 1} • ${THEMES[g]}</b><span class="small">أسئلة ${g * 8 + 1}–${g * 8 + 8}</span><br>${s.mastered ? '✅ مثبّتة' : s.learned ? '📖 تعلّمتها' : '⬜ جديدة'}</button>`;
+  }).join('');
+  shell('مجموعات الحفظ', 'كل مجموعة 8 أسئلة: تعلّم ← تدريب ← تسميع', `<div class="grid">${tiles}</div>`);
+};
+R.group = g => {
+  const s = grp(g), prev = g === 0 || grp(g - 1).mastered;
+  shell(`مجموعة ${g + 1}: ${THEMES[g]}`, `أسئلة ${g * 8 + 1}–${g * 8 + 8}`, `
+  <div class="card">${inG(g).map(q => `<div class="small"><span class="tag">${q.n}</span><span class="en">${esc(q.en)}</span></div>`).join('')}</div>
+  <button class="btn pri" onclick="startLearn(${g})">1️⃣ تعلّم: اسمع وردّد (الشرح والترجمة والحيلة)</button>
+  <button class="btn" onclick="startDrill(${g})">2️⃣ تدريب: المعلّم يسأل وإنت جاوب (معك تلميح)</button>
+  <button class="btn ok" onclick="startRecite(${g})">3️⃣ تسميع نهاية المجموعة (بدون تلميح)</button>
+  ${s.best !== null ? `<div class="small">أول محاولة بالتسميع كانت: ${s.best}/8 ${s.mastered ? '— المجموعة مثبّتة ✅' : ''}</div>` : ''}
+  ${prev ? '' : '<div class="small">نصيحة: ثبّت المجموعة اللي قبلها أول.</div>'}`);
+};
+
+/* ---------- learn ---------- */
+let L = null;
+function startLearn(g) { L = {g, i: 0, rep: 0}; go('learn', null); }
+R.learn = () => {
+  const items = inG(L.g), q = items[L.i];
+  const all = q.all.length ? `<details><summary>كل الأجوبة المقبولة رسمياً</summary><ul class="en">${q.all.map(a => `<li>${esc(a)}</li>`).join('')}</ul></details>` : '';
+  shell(`تعلّم • م${L.g + 1}`, `سؤال ${L.i + 1} من ${items.length}`, `
+  ${bar((L.i + 1) / items.length)}
+  <div class="card"><span class="tag">رقم ${q.n}</span>
+    <div class="q">${esc(q.en)}</div><div class="ar">${esc(q.ar)}</div>
+    <button class="btn sm" onclick="sayQ(${q.n})">🔊 اسمع السؤال</button></div>
+  <div class="ans"><div class="small">الجواب اللي بتحفظه</div><div class="en">${esc(sayText(q))}</div><div>${esc(q.arA)}</div>
+    <button class="btn sm" onclick="sayA(${q.n})">🔊 اسمع الجواب</button>
+    <button class="btn sm" onclick="sayBothQA(${q.n})">▶️ السؤال + الجواب</button></div>
+  <div class="tip">💡 حيلة الحفظ: ${esc(q.tip)}</div>${all}
+  <div class="card"><b>ردّد بصوت عالي بعد المعلّم</b><button class="btn" onclick="L.rep++;R.learn()">🗣️ ردّدتها (${L.rep}/3)</button></div>
+  <div class="row"><button class="btn" onclick="learnMove(-1)" ${L.i === 0 ? 'disabled' : ''}>السابق</button><button class="btn pri" onclick="learnMove(1)">${L.i === items.length - 1 ? 'خلصنا ← تدريب' : 'التالي'}</button></div>`);
+  setTimeout(() => sayBothQA(q.n), 200);
+};
+const sayQ = n => clip((SS && cur.name === 'ask' && SS.opts.mock ? 'o' : 'q') + n, qOf(n).en);
+const sayA = n => { const q = qOf(n); clip('a' + n, sayText(q), () => { if (S.arVoice) setTimeout(() => speak(q.arA, 'ar-SA', 0.95), 250); }, 0.85); };
+function sayBothQA(n) { const q = qOf(n); clip('q' + n, q.en, () => setTimeout(() => sayA(n), 450)); }
+function learnMove(d) {
+  const n = inG(L.g).length;
+  if (d === 1 && L.i === n - 1) { grp(L.g).learned = true; save(); startDrill(L.g, true); return; }
+  L.i = Math.max(0, Math.min(n - 1, L.i + d)); L.rep = 0; R.learn();
+}
+
+/* ---------- ask engine ---------- */
+let SS = null;
+function begin(type, ids, opts) {
+  SS = {type, queue: ids.slice(), idx: 0, missed: [], first: {}, right: 0, wrong: 0, total: ids.length, opts, phase: 'q', log: [], round: 1};
+  go('ask', null, type !== 'x');
+}
+const startDrill = (g, replace) => { if (replace) hist.pop(); begin('drill', shuffle(inG(g).map(q => q.n)), {g, hint: true, ar: true, loop: true}); };
+const startRecite = g => begin('recite', shuffle(inG(g).map(q => q.n)), {g, hint: false, ar: false, loop: true});
+function startReview() {
+  let pool = Q.filter(q => P(q.n).w > P(q.n).r);
+  if (pool.length < 10) { const m = Q.filter(q => grp(q.g).mastered || grp(q.g).learned); pool = pool.concat(shuffle(m.filter(q => !pool.includes(q)))); }
+  if (!pool.length) pool = shuffle(Q);
+  begin('review', shuffle(pool).slice(0, 15).map(q => q.n), {hint: false, ar: true, loop: false});
+}
+function startMock() { begin('mock', shuffle(Q).slice(0, 20).map(q => q.n), {hint: false, ar: false, loop: false, mock: true}); }
+
+R.ask = () => {
+  const n = SS.queue[SS.idx], q = qOf(n), o = SS.opts;
+  const title = {drill: 'تدريب', recite: 'تسميع نهاية المجموعة', review: 'مراجعة', mock: 'اختبار تجريبي'}[SS.type];
+  const sub = o.mock ? `سؤال ${SS.idx + 1} • صح ${SS.right} • غلط ${SS.wrong} (بتنجح بـ 12 صح)` : `سؤال ${SS.idx + 1} من ${SS.queue.length}${SS.round > 1 ? ' • جولة ' + SS.round + ' (الغلطات)' : ''}`;
+  let body = bar(SS.idx / SS.queue.length) + `<div class="card hl"><span class="tag">${o.mock ? 'Question ' + (SS.idx + 1) : 'رقم ' + n}</span>
+    <div class="q">${esc(q.en)}</div>${o.ar ? `<div class="ar">${esc(q.ar)}</div>` : ''}
+    <button class="btn sm" onclick="sayQ(${n})">🔊 كرّر السؤال</button>${o.hint ? `<button class="btn sm" onclick="document.getElementById('hint').style.display='block'">💡 تلميح</button>` : ''}</div>`;
+  if (o.hint) body += `<div id="hint" class="tip" style="display:none">${esc(q.tip)}</div>`;
+  if (SS.phase === 'q') {
+    body += `<div class="card"><b>جاوب بصوت عالي ثم اضغط «كشف»</b>
+    <div class="small">أو اكتب جوابك — وللحكي: دوس زر الميكروفون 🎤 اللي بكيبورد الجوال وإحكي، والتطبيق بيصحّح لحاله.</div>
+    <textarea id="ans" placeholder="Your answer..." autocomplete="off" autocorrect="off" spellcheck="false"></textarea>
+    <button class="btn" id="micbtn" onclick="listen()">🎤 احكي جوابك (إنجليزي)</button><div class="small" id="micst"></div></div>
+    <button class="btn pri" onclick="checkAns()">✔ تحقق من جوابي</button>
+    <button class="btn" onclick="revealAns()">👁️ جاوبت بصوتي — اكشف الجواب</button>`;
+  } else {
+    const f = SS.fb;
+    body += (f.auto !== null ? `<div class="verdict ${f.auto ? 'ok' : 'no'}">${f.auto ? '✔ جوابك صح' : '✘ لسا مش مضبوط'}${f.unv ? ' (ما قدرت أتحقق من الاسم، راجعه)' : ''}</div>` : '') +
+      `<div class="ans"><div class="small">الجواب</div><div class="en">${esc(sayText(q))}</div><div>${esc(q.arA)}</div></div>
+      <div class="tip">💡 ${esc(q.tip)}</div>` +
+      (q.all.length ? `<details><summary>كل الأجوبة المقبولة</summary><ul class="en">${q.all.map(a => `<li>${esc(a)}</li>`).join('')}</ul></details>` : '') +
+      `<div class="small">${f.auto === null ? 'قيّم نفسك بصدق:' : 'إذا التصحيح الآلي غلط، اختر بنفسك:'}</div>
+      <div class="row"><button class="btn ok" onclick="rec(true)">✔ كنت صح</button><button class="btn bad" onclick="rec(false)">✘ كنت غلط</button></div>`;
+  }
+  shell(title, sub, body);
+  if (SS.phase === 'q') setTimeout(() => sayQ(n), 150);
+};
+function listen() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const st = document.getElementById('micst'), btn = document.getElementById('micbtn');
+  if (!SR) { st.textContent = 'المتصفح ما بيدعم الميكروفون هون. استعمل زر الميكروفون 🎤 اللي بكيبورد الجهاز.'; return; }
+  if (REC) { try { REC.stop(); } catch(e) {} return; }
+  stopAll();
+  const r = new SR(); r.lang = 'en-US'; r.interimResults = true; r.continuous = true;
+  let txt = '', err = '';
+  r.onstart = () => { st.textContent = '🎙️ عم أسمعك… احكي الجواب وبعدين دوس «خلصت»'; btn.textContent = '⏹ خلصت'; };
+  r.onresult = e => { let s = ''; for (let i = 0; i < e.results.length; i++) s += e.results[i][0].transcript + ' '; txt = s.trim(); const ta = document.getElementById('ans'); if (ta) ta.value = txt; };
+  r.onerror = e => { err = e.error; };
+  r.onend = () => {
+    REC = null; btn.textContent = '🎤 احكي جوابك (إنجليزي)';
+    if (err === 'not-allowed' || err === 'service-not-allowed') { st.textContent = 'الميكروفون ممنوع. اسمح له من إعدادات المتصفح/الموقع، أو افتح البرنامج بـ Safari مباشرة بدل الأيقونة.'; return; }
+    if (txt) { st.textContent = '✔ سمعتك'; checkAns(); } else st.textContent = 'ما سمعتك' + (err ? ' (' + err + ')' : '') + '. جرّب مرة ثانية.';
+  };
+  REC = r; try { r.start(); } catch(e) { REC = null; st.textContent = 'ما قدرت أشغّل الميكروفون.'; }
+}
+function checkAns() {
+  const n = SS.queue[SS.idx], q = qOf(n), t = ($('#ans') || {}).value || '';
+  if (!t.trim()) { revealAns(); return; }
+  const r = grade(q, t);
+  SS.phase = 'fb'; SS.fb = {auto: r.ok, unv: r.unverified, text: t};
+  R.ask();
+  const fi = Math.floor(Math.random() * (r.ok ? 5 : 3));
+  clip((r.ok ? 'f' : 't') + fi, r.ok ? PRAISE[fi] : TRY[fi], () => { if (!r.ok) clip('a' + n, sayText(q), null, 0.88); });
+}
+function revealAns() {
+  const n = SS.queue[SS.idx], q = qOf(n);
+  SS.phase = 'fb'; SS.fb = {auto: null}; R.ask(); clip('a' + n, sayText(q));
+}
+function rec(ok) {
+  const n = SS.queue[SS.idx], p = P(n);
+  if (SS.first[n] === undefined) SS.first[n] = ok;
+  if (ok) { p.r++; p.box = Math.min(3, p.box + 1); SS.right++; } else { p.w++; p.box = 0; SS.wrong++; if (!SS.missed.includes(n)) SS.missed.push(n); }
+  SS.log.push({n, ok});
+  save();
+  if (SS.opts.mock && (SS.right >= 12 || SS.wrong >= 9)) { SS.phase = 'q'; return finish(); }
+  SS.idx++; SS.phase = 'q';
+  if (SS.idx >= SS.queue.length) {
+    if (SS.opts.loop && SS.missed.length) { SS.queue = shuffle(SS.missed); SS.missed = []; SS.idx = 0; SS.round++; SS.note = true; }
+    else return finish();
+  }
+  R.ask();
+}
+function finish() {
+  const o = SS.opts, g = o.g;
+  const firstRight = Object.values(SS.first).filter(Boolean).length;
+  let body = '';
+  if (o.mock) {
+    const pass = SS.right >= 12;
+    body = `<div class="big">${pass ? '🎉' : '📖'}</div><div class="verdict ${pass ? 'ok' : 'no'}">${pass ? 'نجحت بالاختبار التجريبي' : 'لسا ما وصلنا لـ 12 صح'} — صح ${SS.right} / غلط ${SS.wrong}</div>`;
+    const bad = SS.log.filter(x => !x.ok).map(x => qOf(x.n));
+    if (bad.length) body += `<div class="card"><b>راجع هدول:</b>${bad.map(q => `<div class="small"><span class="tag">${q.n}</span><span class="en">${esc(q.en)}</span><br><span class="en" style="color:#bff5dc">${esc(sayText(q))}</span></div>`).join('')}</div>`;
+    body += `<button class="btn pri" onclick="startMock()">اختبار جديد</button>`;
+  } else if (SS.type === 'recite') {
+    const s = grp(g); if (s.best === null || firstRight > s.best) s.best = firstRight; s.mastered = true; save();
+    body = `<div class="big">${firstRight >= 7 ? '🏆' : '✅'}</div><div class="verdict ok">تثبّتت المجموعة ${g + 1}! أول محاولة: ${firstRight}/${inG(g).length}</div>
+    <div class="card small">${firstRight < 7 ? 'نصيحتي: أعد التسميع بكرا وإنت متأكد من الغلطات، عشان تبقى بالراس.' : 'ممتاز — كمّل للمجموعة اللي بعدها وخلّي مراجعتك كل يوم.'}</div>
+    ${g < NG - 1 ? `<button class="btn pri" onclick="hist.length=0;go('group',${g + 1},false)">المجموعة ${g + 2} ←</button>` : '<div class="verdict ok">خلصت كل المجموعات! جرّب الاختبار التجريبي.</div>'}`;
+  } else {
+    body = `<div class="big">👏</div><div class="verdict ok">خلصنا — أول محاولة: ${firstRight}/${SS.total}</div>
+    ${SS.type === 'drill' ? `<button class="btn ok" onclick="hist.pop();startRecite(${g})">الآن: تسميع نهاية المجموعة 🎯</button>` : ''}`;
+  }
+  body += `<button class="btn" onclick="hist.length=0;go('home',null,false)">الرئيسية</button>`;
+  shell('النتيجة', '', body, true);
+  clip(o.mock ? (SS.right >= 12 ? 'pass' : 'fail') : 'well', o.mock ? (SS.right >= 12 ? 'Congratulations. You passed.' : 'Keep practicing. You can do it.') : 'Well done.', null, 0.95);
+}
+
+/* ---------- interview ---------- */
+const STEPS = [
+  ['قبل المقابلة', ['خد معك: ورقة موعد المقابلة، الـ Green Card، الجواز وأوراق السفر (كل جوازاتك)، رخصة/هوية، وأي أوراق طلبوها بالإشعار (مثلاً أوراق عن السفرات، الضرائب، الجنسية للأولاد…).', 'لا تحمل غير اللازم. روح بكير (حوالي 30 دقيقة) والبس مرتب.', 'اقرأ نسختك من N-400 كلها من أولها لآخرها. الضابط بيسألك منها، وأجوبتك لازم تطابقها.', 'مهم: إذا في أي جواب تغيّر من وقت ما قدّمت (عنوان، شغل، سفر، حالة اجتماعية) قلّه بوضوح، وتشاور مع محامي هجرة إذا الموضوع حساس.']],
+  ['داخل غرفة المقابلة', ['الضابط بيناديك باسمك وبيمشي معك للغرفة. بيطلب منك ترفع إيدك اليمين وتحلف إنك تقول الحقيقة.', 'بيتأكد من هويتك (Green Card + هوية). بعدين بيراجع ورقة N-400 معك سؤال سؤال.', 'اختبار الإنجليزي بيبلّش من أول كلمة: كيف بتحكي وتفهم (Speaking)، بعدين جملة قراءة وجملة كتابة.', 'بعدين اختبار الـ civics: بيسأل لحد 20 سؤال شفهي، وبتنجح بـ 12 صح.']],
+  ['شو بيصير بالآخر', ['ممكن يعطوك نتيجة بنفس اليوم: Granted (موافقة)، Continued (بدهم أوراق أو إعادة جزء)، أو Denied.', 'إذا ما نجحت بجزء من الإنجليزي أو الـ civics، عادةً بيعطوك فرصة ثانية لنفس الجزء بعد كم أسبوع (غالباً 60–90 يوم).', 'بعد الموافقة بتحضر حفل القَسَم (Oath Ceremony) — هناك بتصير مواطن رسمياً. بعدها بتقدّم على الجواز الأمريكي.', 'الإجراءات والتفاصيل بتتغيّر؛ اتبع الإشعار اللي وصلك من USCIS.']],
+  ['نصايح للحكي مع الضابط', ['جاوب قصير وواضح وصادق. إذا ما فهمت قول: «Could you please repeat that?» أو «Could you speak slowly, please?»', 'ما تخمّن. إذا ما بتعرف: «I do not remember exactly.» أحسن من جواب غلط.', 'أي سؤال بتجاوب عليه «Yes» بقسم المواضيع الحساسة (توقيف، مخالفات، ضرائب، تصويت…) ما تتجاوب عليه من راسك: اتفاهم مع محامي هجرة قبل المقابلة.', 'خلّي صوتك هادي ونظرتك للضابط، وقول «Thank you» بالنهاية.']]
+];
+const PHRASES = [
+  ['Good morning. / Good afternoon.', 'صباح الخير / مساء الخير'], ['Yes, I understand.', 'نعم، فهمت'], ['Could you please repeat that?', 'ممكن تعيد من فضلك؟'],
+  ['Could you speak more slowly, please?', 'ممكن تحكي أبطأ من فضلك؟'], ['I am sorry, I did not understand the question.', 'آسف، ما فهمت السؤال'], ['I swear to tell the truth.', 'أقسم أقول الحقيقة'],
+  ['My name is ___.', 'اسمي ___'], ['I live at ___ in Winchester, Virginia.', 'ساكن بـ ___ بوينشستر، فيرجينيا'], ['I have lived there for ___ years.', 'ساكن هناك من ___ سنين'],
+  ['I work as ___.', 'بشتغل كـ ___'], ['I am married. / I am not married.', 'متزوج / مش متزوج'], ['I have two sons.', 'عندي ولدين'],
+  ['Thank you very much.', 'شكراً جزيلاً'], ['May I have a moment, please?', 'ممكن لحظة من فضلك؟'], ['I am ready.', 'أنا جاهز']
+];
+const READ = ['Who was the first President?', 'What is the capital of the United States?', 'Where is the White House?', 'Citizens can vote.', 'Americans vote for the President.', 'We pay taxes.', 'The President lives in the White House.', 'Congress meets in Washington, D.C.', 'How many states are there?', 'When is Memorial Day?', 'Why do people vote?', 'Who is the Father of Our Country?'];
+const WRITE = ['Citizens can vote.', 'Washington was the first President.', 'We pay taxes.', 'The flag is red, white, and blue.', 'People vote in November.', 'Congress meets in Washington, D.C.', 'Thanksgiving is in November.', 'Lincoln was the President during the Civil War.', 'The President lives in the White House.', 'Independence Day is in July.'];
+const NQ = [
+  ['What is your full name?', 'ما اسمك الكامل؟', 'name', 'My full name is ___.'],
+  ['Where do you live? How long have you lived there?', 'وين ساكن ومن متى؟', 'addr', 'I live at ___. I have lived there for ___ years.'],
+  ['Are you married? What is your spouse\'s name?', 'متزوج؟ شو اسم زوجتك؟', 'marital', 'Yes, I am married. My wife\'s name is ___.'],
+  ['Do you have children? How many?', 'عندك أولاد؟ كم؟', 'kids', 'Yes, I have two sons. Their names are ___ and ___.'],
+  ['What do you do for work?', 'شو شغلك؟', 'job', 'I am self-employed. I ___.'],
+  ['Have you traveled outside the United States since you became a permanent resident?', 'سافرت برّا أمريكا من وقت الإقامة؟', 'trips', 'Yes, I traveled to ___ in ___ for ___ days.'],
+  ['Have you filed your taxes every year? Do you owe any taxes?', 'قدّمت ضرائبك كل سنة؟ عليك ضرائب؟', 'taxes', 'Yes, I file every year. I do not owe any taxes. (إذا هاد الصدق)'],
+  ['Have you ever been arrested, cited, or detained by any law enforcement officer?', 'انوقفت أو انعطيت مخالفة/توقيف من الشرطة؟', null, 'قول الحقيقة كاملة. إذا «Yes» → اتفاهم مع محامي هجرة قبل المقابلة.'],
+  ['Have you ever voted in a U.S. election or claimed to be a U.S. citizen?', 'صوّتت بانتخابات أمريكية أو قلت إنك مواطن؟', null, 'الجواب الصادق. (للي ما عمل: «No, I have not.»)'],
+  ['Have you ever given false information to get an immigration benefit?', 'عطيت معلومات غلط للهجرة؟', null, 'الجواب الصادق فقط. إذا فيه شي: محامي هجرة أول.'],
+  ['Do you support the Constitution and the form of government of the United States?', 'بتدعم الدستور وشكل الحكومة؟', null, 'Yes, I do.'],
+  ['Are you willing to take the full Oath of Allegiance to the United States?', 'مستعد تأخذ قَسَم الولاء كامل؟', null, 'Yes, I am.'],
+  ['If the law requires it, are you willing to serve the country (military or other service)?', 'إذا القانون طلب، مستعد تخدم البلد؟', null, 'Yes, if the law requires it.'],
+  ['(For men 18–26) Did you register for the Selective Service?', '(للرجال 18–26) سجّلت بالخدمة الانتقائية؟', null, 'الجواب الصادق حسب عمرك.'],
+  ['Why do you want to become a U.S. citizen?', 'ليش بدك تصير مواطن؟', null, 'مثال: I want to vote, to travel with a U.S. passport, and to be a full part of this country where I live and work.'],
+  ['Do you want to change your name?', 'بدك تغيّر اسمك؟', null, 'No, I do not. (أو الاسم الجديد إذا كنت طالبه بـ N-400)']
+];
+let IV = {tab: 0};
+R.interview = () => {
+  const tabs = ['خطوات اليوم', 'اتكلم مع الضابط', 'اختبار القراءة', 'اختبار الكتابة', 'أسئلة N-400', 'مقابلة تجريبية'];
+  const t = IV.tab;
+  let b = `<div class="tabs">${tabs.map((x, i) => `<button class="${i === t ? 'on' : ''}" onclick="IV.tab=${i};R.interview()">${x}</button>`).join('')}</div>`;
+  if (t === 0) b += STEPS.map(s => `<div class="card"><b>${s[0]}</b><ul>${s[1].map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>`).join('') +
+    `<div class="card small">تنبيه: هاد شرح عام للمساعدة. للحالات الخاصة (توقيفات، سفر طويل، ضرائب، أي شي غير عادي) اسأل محامي هجرة. وتابع تعليمات USCIS الرسمية.</div>`;
+  if (t === 1) b += `<div class="card small">جمل جاهزة لتحكيها بالمقابلة. اضغط 🔊 اسمعها وكرّرها بصوت عالي.</div>` + PHRASES.map((p, i) => `<div class="card"><div class="q" style="font-size:19px">${esc(p[0])}</div><div class="ar">${esc(p[1])}</div><button class="btn sm" onclick="clip('p${i}',PHRASES[${i}][0].replace(/___/g,'blank'),null,0.85)">🔊 اسمع</button></div>`).join('');
+  if (t === 2) b += `<div class="card small">بالقراءة: الضابط بيعطيك لحد 3 جمل وبتقرأ جملة وحدة صح. اقرأ بصوت عالي، وبعدين اسمع النطق الصحيح وقيّم نفسك.</div>` + READ.map((s, i) => `<div class="card"><div class="q" style="font-size:20px">${esc(s)}</div><button class="btn sm" onclick="clip('r${i}',READ[${i}],null,0.8)">🔊 اسمع النطق</button></div>`).join('');
+  if (t === 3) b += `<div class="card small">بالكتابة: الضابط بيقرأ جملة وإنت بتكتبها. اضغط 🔊، اكتب اللي سمعته، وتحقق. (كتابة واضحة؛ الأخطاء الصغيرة بالتنقيط/الحروف الكبيرة عادةً مسموحة حسب إرشادات USCIS.)</div><div id="wr"></div>`;
+  if (t === 4) b += `<div class="card small">الضابط بيمشي على ورقة N-400 اللي قدّمتها. هاي أكتر الأسئلة شيوعاً. أجوبتك الشخصية لازم تطابق الورقة — عبّيها بالإعدادات.</div>` + NQ.map(q => `<div class="card"><div class="q" style="font-size:19px">${esc(q[0])}</div><div class="ar">${esc(q[1])}</div><div class="ans"><div class="small">شكل الجواب</div><div class="en">${esc(q[3])}</div>${q[2] && S.me[q[2]] ? `<div class="small">إجابتك المحفوظة: ${esc(S.me[q[2]])}</div>` : ''}</div></div>`).join('');
+  if (t === 5) b += `<div class="card small">الضابط بيسألك بصوته، وإنت جاوب بصوت عالي، بعدها قيّم نفسك. 16 سؤال من أسئلة N-400.</div><button class="btn pri" onclick="startMockN()">ابدأ المقابلة التجريبية</button>`;
+  shell('المقابلة كاملة', 'كل شي غير أسئلة الـ civics', b);
+  if (t === 3) renderWrite();
+};
+let WI = 0;
+function renderWrite() {
+  const s = WRITE[WI % WRITE.length];
+  $('#wr').innerHTML = `<div class="card"><b>جملة ${(WI % WRITE.length) + 1}</b><button class="btn sm" onclick="clip('w'+(WI%WRITE.length),WRITE[WI%WRITE.length],null,0.7)">🔊 اسمع الجملة</button>
+  <textarea id="wv" placeholder="Write the sentence..." autocorrect="off" spellcheck="false"></textarea>
+  <button class="btn pri" onclick="checkWrite()">تحقق</button><div id="wres"></div></div>`;
+  setTimeout(() => clip('w' + (WI % WRITE.length), s, null, 0.7), 200);
+}
+function checkWrite() {
+  const s = WRITE[WI % WRITE.length], v = $('#wv').value;
+  const a = norm(s).trim(), b = norm(v).trim(), ok = a === b;
+  $('#wres').innerHTML = `<div class="verdict ${ok ? 'ok' : 'no'}">${ok ? '✔ صح' : '✘ فيها غلط'}</div><div class="en ans">${esc(s)}</div><button class="btn" onclick="WI++;renderWrite()">الجملة اللي بعدها</button>`;
+}
+let NS = null;
+function startMockN() { NS = {i: 0, show: false}; go('mockn'); }
+R.mockn = () => {
+  const q = NQ[NS.i];
+  shell('مقابلة تجريبية', `سؤال ${NS.i + 1} من ${NQ.length}`, `${bar(NS.i / NQ.length)}<div class="card hl"><div class="q">${esc(q[0])}</div><div class="ar">${NS.show ? esc(q[1]) : ''}</div>
+  <button class="btn sm" onclick="clip('n'+NS.i,NQ[NS.i][0])">🔊 كرّر السؤال</button></div>
+  <div class="card small">جاوب بصوت عالي بالإنجليزي. بعدين شوف شكل الجواب.</div>
+  <button class="btn" onclick="NS.show=true;R.mockn()">👁️ الترجمة وشكل الجواب</button>
+  ${NS.show ? `<div class="ans"><div class="en">${esc(q[3])}</div>${q[2] && S.me[q[2]] ? `<div class="small">إجابتك: ${esc(S.me[q[2]])}</div>` : ''}</div>` : ''}
+  <button class="btn pri" onclick="nextN()">${NS.i === NQ.length - 1 ? 'خلصنا' : 'السؤال اللي بعده'}</button>`);
+  if (!NS.show) setTimeout(() => clip('n' + NS.i, q[0]), 200);
+};
+function nextN() { NS.i++; NS.show = false; if (NS.i >= NQ.length) { shell('خلصت المقابلة التجريبية', '', `<div class="big">👏</div><div class="card">ممتاز. كرّرها لحد ما تصير أجوبتك طبيعية وبسرعة. وراجع ورقة N-400 مرة أخيرة قبل المقابلة.</div><button class="btn pri" onclick="hist.length=0;go('home',null,false)">الرئيسية</button>`, true); } else R.mockn(); }
+
+try { if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {}); } catch(e) {}
+loadAudio();
+R.home();
+</script>
+</body>
+</html>
